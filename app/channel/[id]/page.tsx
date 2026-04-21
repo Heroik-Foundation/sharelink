@@ -53,14 +53,14 @@ export default function ChannelsPage() {
 
                         {/* MEMBERS */}
                         {item?.members && item.members.length > 0 && (
-                            <div className="flex items-center px-3 h-[44px] rounded-full">
-                                <div className="flex -space-x-2">
+                            <div style={{ boxShadow: "0px 0px 10px 0px #00000040" }} className="flex items-center px-3 h-[44px] rounded-full">
+                                <div className="flex -space-x-4">
                                     {item.members.slice(0, 3).map((member) => (
                                         <div
                                             key={member._id}
                                             className="relative rounded-full border-2 border-white overflow-hidden"
                                         >
-                                            <Avatar>
+                                            <Avatar size="sm" >
                                                 <Avatar.Image
                                                     alt={member?.fullname}
                                                     src={member.photo}
@@ -76,7 +76,7 @@ export default function ChannelsPage() {
                                     ))}
                                 </div>
 
-                                <span className="ml-2 text-xs font-semibold ">
+                                <span className="ml-2 text-xs font-bold ">
                                     {formatNumberWithK(item.members.length)}{" "}
                                     Members
                                 </span>

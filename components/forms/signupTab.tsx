@@ -6,10 +6,12 @@ export default function SignupTab({
     formikSignup,
     signupMutation,
     setTab,
+    isLoading
 }: {
     formikSignup: any;
     signupMutation: any;
     setTab: (tab: number) => void;
+    isLoading?: boolean
 }) {
     return (
         <FormikProvider value={formikSignup}>
@@ -26,7 +28,7 @@ export default function SignupTab({
                     <CustomInput name="email" label="Email Address" type="email" placeholder="" />
                     <CustomInput name="phone" label="Phone Number" type="tel" placeholder="" />
                     <CustomInput name="password" isPassword label="Password" type="password" placeholder="" />
-                    <CustomButton type="submit" loading={signupMutation.isLoading} rounded="44px" width="100%" height="50px">
+                    <CustomButton type="submit" loading={isLoading} rounded="44px" width="100%" height="50px">
                         Proceed
                     </CustomButton>
                     <p className="text-primary20 text-xs font-medium">

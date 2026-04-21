@@ -5,9 +5,11 @@ import CustomButton from "../shared/customButton";
 export default function VerifyOtpTab({
     formikVerify,
     verifyMutation,
+    isLoading
 }: {
     formikVerify: any;
     verifyMutation: any;
+    isLoading?: boolean
 }) {
     return (
         <FormikProvider value={formikVerify}>
@@ -54,7 +56,7 @@ export default function VerifyOtpTab({
                     </div>
                     <CustomButton
                         type="submit"
-                        loading={verifyMutation.isLoading}
+                        loading={isLoading}
                         rounded="44px"
                         width="100%"
                         height="50px"

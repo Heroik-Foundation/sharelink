@@ -6,6 +6,8 @@ import { dateFormat } from "../../utils/dateFormat";
 import type { IEvent } from "../../model/event";
 import { IUserDetail } from "@/model/user";
 import { useEffect, useState } from "react";
+import { textLimit } from "@/utils/textlimit";
+import { FaMinus, FaPlus } from "react-icons/fa";
 
 export default function TicketSelectionTab({
     event,
@@ -36,17 +38,17 @@ export default function TicketSelectionTab({
     isLoading: boolean;
     discountData: any;
 }) {
-
     const [code, setCode] = useState("");
+    const [textIndex, setTextIndex] = useState(-1);
     const [discountPerctage, setDiscountPerctage] = useState(0);
-    const [discountPrice, setDiscountPrice] = useState(0);
+    const [discountPrice, setDiscountPrice] = useState(-1);
 
     useEffect(() => {
         if (discountData?.data?.discount) {
             const perct =
                 (discountData?.data?.discount / 100 / totalPrices) * 100;
             setDiscountPerctage(perct);
-            setDiscountPrice(discountData?.data?.discount / 100);
+            setDiscountPrice((discountData?.data?.discount / 100) > totalPrices ? 0 : (discountData?.data?.discount / 100) - totalPrices);
         }
     }, [discountData?.data?.discount]);
 
@@ -77,96 +79,131 @@ export default function TicketSelectionTab({
                     return (
                         <div
                             key={index}
-                            className="w-full border rounded-xl flex items-center justify-between gap-4 p-4"
+                            className="w-full border rounded-xl flex items-center justify-between gap-4 p-3"
                         >
-                            <div className="flex flex-col">
+                            <div className=" w-full flex flex-col">
                                 <p className="text-xs font-semibold text-primary capitalize ">
                                     {item?.ticketType}
                                 </p>
-                                <p className="font-semibold text-primary">
-                                    {formatNumber(
-                                        item?.ticketPrice / 100,
-                                        event?.currency as any,
+                                <div className=" w-full flex justify-between items-center ">
+                                    <p className="font-bold text-2xl text-primary">
+                                        {formatNumber(
+                                            item?.ticketPrice / 100,
+                                            event?.currency as any,
+                                        )}
+                                    </p>
+
+                                    {isUnavailable ? (
+                                        <div className="w-[116px] text-primary px-2 flex justify-between items-center rounded-lg">
+                                            <p className="text-[10px] font-semibold text-center">
+                                                {!salesStarted
+                                                    ? `Sales Starts on ${dateFormat(item?.salesStartDate)}`
+                                                    : now >
+                                                        new Date(
+                                                            event?.eventEndDate,
+                                                        )
+                                                      ? "Event Ended"
+                                                      : !salesOngoing
+                                                        ? "Sales Ended"
+                                                        : "Ticket Sold Out"}
+                                            </p>
+                                        </div>
+                                    ) : hasNoLimit ? (
+                                        <div className="w-fit gap-2 text-primary border-2 px-2 flex justify-between items-center rounded-lg">
+                                            <button
+                                                role="button"
+                                                onClick={() =>
+                                                    updateTicket(
+                                                        item._id,
+                                                        "remove",
+                                                    )
+                                                }
+                                            >
+                                                <FaMinus size="16px" />
+                                            </button>
+                                            <input
+                                                value={count}
+                                                readOnly
+                                                placeholder="0"
+                                                className="focus:border-0 w-[40px] outline-none font-black text-center"
+                                            />
+                                            <button
+                                                role="button"
+                                                onClick={() =>
+                                                    updateTicket(
+                                                        item._id,
+                                                        "add",
+                                                    )
+                                                }
+                                            >
+                                                <FaPlus size="16px" />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="w-fit gap-2 text-primary px-2 flex justify-between items-center rounded-lg">
+                                            <button
+                                                role="button"
+                                                onClick={() =>
+                                                    updateTicket(
+                                                        item._id,
+                                                        "remove",
+                                                    )
+                                                }
+                                            >
+                                                <FaMinus size="16px" />
+                                            </button>
+                                            <input
+                                                value={count}
+                                                readOnly
+                                                placeholder="0"
+                                                className="focus:border-0 rounded-md bg-foreground w-[30px] h-[31px] text-white outline-none text-center"
+                                            />
+                                            <button
+                                                role="button"
+                                                disabled={
+                                                    item?.spotsLeft !== null &&
+                                                    item?.spotsLeft <= count
+                                                }
+                                                onClick={() =>
+                                                    updateTicket(
+                                                        item._id,
+                                                        "add",
+                                                    )
+                                                }
+                                            >
+                                                <FaPlus size="16px" />
+                                            </button>
+                                        </div>
                                     )}
+                                </div>
+                                <p className=" text-[10px] font-medium text-primary ">
+                                    ({item?.spotsLeft} Tickets Available:)
                                 </p>
-                                <p className="text-xs font-semibold text-primary">
+                                <p className="text-[10px] font-semibold text-primary">
                                     {"Sale Ends On " +
                                         dateFormat(item?.salesEndDate)}
                                 </p>
-                                <p className="text-xs font-bold text-primary">
-                                    Tickets Available:{" "}
-                                    <span>{item?.spotsLeft}</span>
+                                <p className="text-[10px] font-medium mt-3 text-primary">
+                                    {textLimit(
+                                        item?.ticketDetails,
+                                        textIndex === index
+                                            ? item?.ticketDetails.length
+                                            : 50,
+                                    )}{" "}
+                                    <span
+                                        onClick={() =>
+                                            setTextIndex((prev) =>
+                                                prev === index ? -1 : index,
+                                            )
+                                        }
+                                        className=" text-[#B00062] "
+                                    >
+                                        {textIndex === index
+                                            ? "See Less"
+                                            : "View more"}
+                                    </span>
                                 </p>
                             </div>
-
-                            {isUnavailable ? (
-                                <div className="w-[116px] h-[54px] text-primary px-2 flex justify-between items-center rounded-lg">
-                                    <p className="text-xs font-semibold text-center">
-                                        {!salesStarted
-                                            ? `Sales Starts on ${dateFormat(item?.salesStartDate)}`
-                                            : now >
-                                                new Date(event?.eventEndDate)
-                                              ? "Event Ended"
-                                              : !salesOngoing
-                                                ? "Sales Ended"
-                                                : "Ticket Sold Out"}
-                                    </p>
-                                </div>
-                            ) : hasNoLimit ? (
-                                <div className="w-[116px] h-[54px] text-primary border-2 px-2 border-[#37137F4D] flex justify-between items-center rounded-lg">
-                                    <button
-                                        role="button"
-                                        onClick={() =>
-                                            updateTicket(item._id, "remove")
-                                        }
-                                    >
-                                        <AiOutlineMinusCircle size="30px" />
-                                    </button>
-                                    <input
-                                        value={count}
-                                        readOnly
-                                        placeholder="0"
-                                        className="focus:border-0 w-[40px] outline-none font-bold text-center"
-                                    />
-                                    <button
-                                        role="button"
-                                        onClick={() =>
-                                            updateTicket(item._id, "add")
-                                        }
-                                    >
-                                        <IoMdAddCircleOutline size="30px" />
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="w-[116px] h-[54px] text-primary border-2 px-2 border-[#37137F4D] flex justify-between items-center rounded-lg">
-                                    <button
-                                        role="button"
-                                        onClick={() =>
-                                            updateTicket(item._id, "remove")
-                                        }
-                                    >
-                                        <AiOutlineMinusCircle size="30px" />
-                                    </button>
-                                    <input
-                                        value={count}
-                                        readOnly
-                                        placeholder="0"
-                                        className="focus:border-0 w-[40px] outline-none text-center"
-                                    />
-                                    <button
-                                        role="button"
-                                        disabled={
-                                            item?.spotsLeft !== null &&
-                                            item?.spotsLeft <= count
-                                        }
-                                        onClick={() =>
-                                            updateTicket(item._id, "add")
-                                        }
-                                    >
-                                        <IoMdAddCircleOutline size="30px" />
-                                    </button>
-                                </div>
-                            )}
                         </div>
                     );
                 })}
@@ -182,7 +219,7 @@ export default function TicketSelectionTab({
                             <CustomButton
                                 loading={isLoading}
                                 onClick={() =>
-                                    handleDiscount(code, (totalPrices * 100) + "")
+                                    handleDiscount(code, totalPrices + "")
                                 }
                                 isDisabled={code ? false : true}
                                 fontSize="12px"
@@ -201,43 +238,50 @@ export default function TicketSelectionTab({
                             {formatNumber(totalPrices, event?.currency as any)}
                         </p>
                         <p
-                            className={` ${discountPrice > 0 ? "" : "hidden"} text-sm font-bold `}
+                            className={` ${discountPerctage > 0 ? "" : "hidden"} text-sm font-bold `}
                         >
                             Discount(%)
                         </p>
                         <p
-                            className={` ${discountPrice > 0 ? "" : "hidden"} font-black text-right `}
+                            className={` ${discountPerctage > 0 ? "" : "hidden"} font-black text-right `}
                         >
                             {formatNumber(discountPerctage)}
                         </p>
                         <p
-                            className={` ${discountPrice > 0 ? "" : "hidden"} text-sm font-bold `}
+                            className={` ${discountPerctage > 0 ? "" : "hidden"} text-sm font-bold `}
                         >
                             Discount Prize
                         </p>
                         <p
-                            className={` ${discountPrice > 0 ? "" : "hidden"} font-black text-right `}
+                            className={` ${discountPerctage > 0 ? "" : "hidden"} font-black text-right `}
                         >
                             {formatNumber(
                                 discountPrice,
                                 event?.currency as any,
                             )}
                         </p>
-                        <p className="text-sm font-bold">Service Fee</p>
-                        <p className="font-black text-right">
-                            {formatNumber(
-                                totalPrices > 0 ? serviceFees : 0,
-                                event?.currency as any,
+                        {(discountPrice !== 0) && (
+                                <p className="text-sm font-bold">Service Fee</p>
                             )}
-                        </p>
+                        {(discountPrice !== 0) && (
+                                <p className="font-black text-right">
+                                    {formatNumber(
+                                        totalPrices > 0 ? serviceFees : 0,
+                                        event?.currency as any,
+                                    )}
+                                </p>
+                            )}
                         <p className="text-sm font-bold">Total</p>
                         <p className="font-black text-right">
                             {formatNumber(
-                                discountPrice > 0
-                                    ? discountPrice + serviceFees
-                                    : totalPrices > 0
-                                      ? totalPrices + serviceFees
-                                      : totalPrices,
+                                (discountPerctage > 0 &&
+                                    discountPrice === 0)
+                                    ? discountPrice
+                                    : discountPerctage > 0
+                                      ? discountPrice + serviceFees
+                                      : totalPrices > 0
+                                        ? totalPrices + serviceFees
+                                        : totalPrices,
                                 event?.currency as any,
                             )}
                         </p>

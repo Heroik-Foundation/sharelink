@@ -4,6 +4,7 @@ import ModalLayout from "@/components/shared/modalLayout";
 import useAuth from "@/hooks/useAuth";
 import useGetEventData from "@/hooks/useGetEventData";
 import { useEventByUserId } from "@/hooks/useGetUserData";
+import { formatNumberWithKCurrency } from "@/utils/formatNumberWithK";
 import { formatNumber } from "@/utils/numberFormat";
 import { textLimit } from "@/utils/textlimit";
 import { useRouter } from "next/navigation";
@@ -13,23 +14,21 @@ import { IoChevronBack } from "react-icons/io5";
 export default function PolicyPage() {
     const { data: event } = useGetEventData();
 
-    const  { data } = useEventByUserId()
+    const { data = [] } = useEventByUserId();
 
-    console.log(data);
-    
+    console.log(event);
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [tab, setTab] = useState(0);
+    const [isOpen, setIsOpen] = useState(false); 
     const userId = localStorage.getItem("userId");
-    const { user, userDataMutation } = useAuth();
+    const { user, userDataMutation, tabRefund, setTabRefund, refundMutation } = useAuth();
 
-    const router = useRouter()
+    const router = useRouter();
 
     // Fetch user data on mount if userId exists
     useEffect(() => {
         if (!userId) return;
         userDataMutation?.mutate(userId);
-    }, [userId]); 
+    }, [userId]);
 
     const policy = [
         {
@@ -70,12 +69,15 @@ export default function PolicyPage() {
     return (
         <div className=" w-full flex flex-col h-screen p-4 gap-10">
             <div className=" flex  ">
-                <button onClick={()=> router.back()} className=" w-11 h-11 bg-foreground flex justify-center items-center rounded-2xl text-white ">
+                <button
+                    onClick={() => router.back()}
+                    className=" w-11 h-11 bg-foreground flex justify-center items-center rounded-2xl text-white "
+                >
                     <IoChevronBack />
                 </button>
             </div>
             <div className=" w-full flex flex-col gap-6 ">
-                {policy.map((item, index) => {
+                {(event?.isRefundable ? policy : nonrefundPolicy).map((item, index) => {
                     return (
                         <div
                             key={index}
@@ -89,23 +91,30 @@ export default function PolicyPage() {
                     );
                 })}
             </div>
-            <div className=" flex justify-end mt-auto ">
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className=" font-bold text-foreground "
-                >
-                    Refund Request
-                </button>
-            </div>
+            {(data.length > 0 && event?.isRefundable)&& (
+                <div className=" flex justify-end mt-auto ">
+                    <button
+                        onClick={() => setIsOpen(true)}
+                        className=" font-bold text-foreground "
+                    >
+                        Refund Request
+                    </button>
+                </div>
+            )}
             <ModalLayout open={isOpen} setOpen={setIsOpen}>
-                {tab === 0 && (
+                {tabRefund === 0 && (
                     <div className=" flex w-full flex-col gap-7 ">
                         <p className=" font-bold text-center text-foreground ">
                             Are you sure you want <br /> to request for this
                             refund?
                         </p>
                         <div className=" w-full font-bold flex justify-around items-center ">
-                            <button onClick={()=> setTab(1)} className=" text-[#23B33A] ">Yes</button>
+                            <button
+                                onClick={() => setTabRefund(1)}
+                                className=" text-[#23B33A] "
+                            >
+                                Yes
+                            </button>
                             <button
                                 onClick={() => setIsOpen(false)}
                                 className=" text-[#EE3124] "
@@ -115,27 +124,12 @@ export default function PolicyPage() {
                         </div>
                     </div>
                 )}
-                {tab === 1 && (
+                {tabRefund === 1 && (
                     <div className=" flex w-full flex-col gap-8 overflow-x-hidden ">
                         <p className=" font-bold text-center text-xl text-foreground ">
                             Ticket Refund Preview
                         </p>
                         <div className=" w-full flex flex-col gap-4 ">
-                            {/* <div className=" w-full! grid grid-cols-2 text-sm text-black font-semibold gap-3 ">
-                                <p>Full Name</p>
-                                <p className=" text-right ">Fredd</p>
-                                <p>Email</p>
-                                <p className=" text-right ">
-                                    example@gmail.com
-                                </p>
-                                <p>Phone Number</p>
-                                <p className=" text-right ">+345566566</p>
-                                <p>Event Name</p>
-                                <p className=" text-right ">Test</p>
-                                <p>Noumber Of Tickets</p>
-                                <p className=" text-right ">1</p>
-                            </div> */}
-
                             <div className="w-full flex flex-col text-black gap-4 text-sm">
                                 <div className="w-full flex justify-between gap-4">
                                     <p className="font-semibold">Full Name</p>
@@ -160,7 +154,7 @@ export default function PolicyPage() {
                                 <div className="w-full flex justify-between gap-4">
                                     <p className="font-semibold">Event Name</p>
                                     <p className=" font-medium capitalize ">
-                                        {textLimit(event?.name+"", 30)}
+                                        {textLimit(event?.name + "", 30)}
                                     </p>
                                 </div>
                                 <div className="w-full flex justify-between gap-4">
@@ -168,18 +162,41 @@ export default function PolicyPage() {
                                         Number of Ticket
                                     </p>
                                     <p className=" font-medium ">
-                                        {formatNumber(1)}
+                                        {formatNumber(data[0]?.totalTickets)}
                                     </p>
                                 </div>
                             </div>
                             <div className=" w-full col-span-12 text-foreground rounded-lg font-bold flex justify-between bg-[#37137F1A] p-2 ">
                                 <p>Ticket Price</p>
-                                <p className=" text-right ">$7</p>
+                                <p className=" text-right ">
+                                    {formatNumberWithKCurrency(
+                                        data[0]?.ticketType?.ticketPrice / 100,
+                                        event?.currency as any,
+                                    )}
+                                </p>
                             </div>
                         </div>
                         <div className=" pt-4 w-full border-t">
-                            <CustomButton rounded="999px">Proceed</CustomButton>
+                            <CustomButton loading={refundMutation.isPending} onClick={()=> refundMutation.mutate()} rounded="999px">Proceed</CustomButton>
                         </div>
+                    </div>
+                )}
+
+                {tabRefund === 2 && (
+                    <div className=" flex h-[100px] justify-center items-center w-full flex-col gap-7 ">
+                        <p className=" font-bold text-center text-foreground ">
+                            Refund Successful!
+                        </p>
+                    </div>
+                )}
+
+                {tabRefund === 3 && (
+                    <div className=" flex h-[100px] justify-center items-center w-full flex-col gap-7 ">
+                        <p className=" max-w-[232px] font-bold text-center text-foreground ">
+                            <span className=" text-[#E42E21] ">Sorry!</span> You
+                            can no longer request for a refund at this time for
+                            this event
+                        </p>
                     </div>
                 )}
             </ModalLayout>

@@ -20,6 +20,7 @@ import { textLimit } from "../../../utils/textlimit";
 import { formatNumber } from "../../../utils/numberFormat";
 
 import type { IEvent, IEventTicket } from "../../../model/event";
+import ReactMarkdown from "react-markdown";
 
 export default function UserId() {
     const { data, isLoading } = useUserData();
@@ -52,29 +53,33 @@ export default function UserId() {
         setShowModal(true);
     };
 
+    const bio = data?.bio ?? "";
+    const isLong = bio.length > 150;
+    const displayText = showBio ? bio : textLimit(bio, 150);
+
     return (
         <LoadingAnimation loading={isLoading}>
             <div className="w-full flex text-foreground flex-col items-center overflow-y-auto pb-6">
                 <div className="w-full max-w-[500px] bg-[#37137F] rounded-b-4xl shadow flex flex-col gap-4">
                     {/* HEADER */}
-                    <div className="flex justify-center pt-6">
+                    <div className="flex justify-center">
                         <div
                             onClick={() => setShowImg(true)}
-                            className="relative w-24 h-24 cursor-pointer"
+                            className="relative w-full h-[220px] cursor-pointer"
                         >
                             {data?.logo && (
                                 <Image
                                     src={data.logo}
                                     alt="logo"
                                     fill
-                                    className="rounded-2xl object-cover"
+                                    className=" object-cover"
                                 />
                             )}
                         </div>
                     </div>
 
                     {/* CONTENT */}
-                    <div className="bg-white rounded-4xl px-4 py-6 flex flex-col items-center gap-4 text-[#37137F]">
+                    <div className="bg-white rounded-4xl px-4 -mt-10 z-10 py-6 flex flex-col items-center gap-4 text-[#37137F]">
                         {/* NAME */}
                         <h1 className="text-2xl font-extrabold text-center">
                             {data?.name}
@@ -85,18 +90,20 @@ export default function UserId() {
                             <div className="mx-auto mb-2 w-fit px-4 py-1 bg-[#37137F] text-white rounded-3xl font-bold">
                                 About Us
                             </div>
+                            <div className=" text-left font-medium">
+                                <ReactMarkdown>{displayText}</ReactMarkdown>
 
-                            <p className="text-left font-medium ">
-                                {textLimit(data?.bio ?? "", 150)}
-                                {data?.bio && data.bio.length > 150 && (
+                                {isLong && (
                                     <span
-                                        onClick={() => setShowBio(true)}
-                                        className="ml-1 font-bold underline cursor-pointer"
+                                        onClick={() =>
+                                            setShowBio((prev) => !prev)
+                                        }
+                                        className="ml-1 font-bold underline cursor-pointer inline-block"
                                     >
-                                        Read More
+                                        {showBio ? "Show Less" : "Read More"}
                                     </span>
                                 )}
-                            </p>
+                            </div> 
                         </section>
 
                         {/* EVENTS */}
@@ -123,19 +130,19 @@ export default function UserId() {
                     open={showBio}
                     setOpen={setShowBio}
                 >
-                    <div className="h-[80vh] overflow-y-auto py-4">
+                    <div className="h-[80vh] font-medium overflow-y-auto py-4">
                         <div className="mx-auto mb-4 w-fit px-4 py-1 bg-[#37137F] text-white rounded-3xl font-bold">
                             About Us
                         </div>
-
-                        {paragraphs.map((text, i) => (
+                        <ReactMarkdown>{data?.bio}</ReactMarkdown>
+                        {/* {paragraphs.map((text, i) => (
                             <p
                                 key={i}
                                 className="mb-4 text-sm font-medium leading-relaxed"
                             >
                                 {text}
                             </p>
-                        ))}
+                        ))} */}
                     </div>
                 </ModalLayout>
 

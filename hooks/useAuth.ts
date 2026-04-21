@@ -17,6 +17,8 @@ const useAuth = (community?: ICommunity) => {
 
     const [tab, setTab] = useState(community ? 3 : 2);
 
+    const [tabRefund, setTabRefund] = useState(0);
+
     const params = useParams();
     const searchParams = useSearchParams();
 
@@ -136,7 +138,11 @@ const useAuth = (community?: ICommunity) => {
                 // ✅ Open the payment page in a new tab
                 window.open(`${paymentUrl}&eventbtn=true`, "_blank");
             } else {
-                toast.danger("Payment URL not found.");
+                setTab(4)
+
+                console.log(data);
+                
+                // toast.danger("Payment URL not found.");
             }
         },
     });
@@ -197,11 +203,16 @@ const useAuth = (community?: ICommunity) => {
                 },
             ),
 
-        onError: () => {
+        onError: (error) => {
+            console.log(error);
             setTab(4);
         },
 
-        onSuccess: () => {
+        onSuccess: (data) => {
+
+            console.log(data);
+            
+
             queryClient.invalidateQueries({ queryKey: ["userdata"] });
             queryClient.invalidateQueries({ queryKey: ["communities-by-id"] });
 
@@ -220,6 +231,20 @@ const useAuth = (community?: ICommunity) => {
         onSuccess: () => {
             toast.success("OTP Verified Successfully");
             setTab(3);
+        },
+    }); 
+
+    const refundMutation = useMutation({
+        mutationFn: () =>
+            httpService.post(`/events/request-refund/${id}`),
+        onError: (error: any) => {
+
+            setTabRefund(3);
+
+            toast.danger(error?.response?.data?.error?.details?.message);
+        },
+        onSuccess: () => { 
+            setTabRefund(2);
         },
     });
 
@@ -312,7 +337,7 @@ const useAuth = (community?: ICommunity) => {
         onSubmit: (data) => {
             verifyMutation.mutate(data);
         },
-    });
+    }); 
 
     const isLoading =
         verifyMutation?.isPending ||
@@ -349,7 +374,10 @@ const useAuth = (community?: ICommunity) => {
         formikResetPassword,
         user,
         userDataMutation,
-        discountCode
+        discountCode,
+        refundMutation,
+        tabRefund,
+        setTabRefund
     };
 };
 

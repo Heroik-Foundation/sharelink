@@ -178,6 +178,7 @@ export default function EventTicketForm({
                     formikSignup={formikSignup}
                     signupMutation={signupMutation}
                     setTab={setTab}
+                    isLoading={isLoading}
                 />
             )}
 
@@ -185,6 +186,7 @@ export default function EventTicketForm({
                 <VerifyOtpTab
                     formikVerify={formikVerify}
                     verifyMutation={verifyMutation}
+                    isLoading={isLoading}
                 />
             )}
 
@@ -201,6 +203,7 @@ export default function EventTicketForm({
                     formikForgotPassword={formikForgotPassword}
                     forgotMutation={forgotMutation}
                     setTab={setTab}
+                    isLoading={isLoading}
                 />
             )}
 
@@ -233,6 +236,7 @@ export default function EventTicketForm({
                     totalTickets={totalTickets}
                     handleSubmit={handleSubmit}
                     setTab={setTab}
+                    isLoading={isLoading}
                 />
             )}
 

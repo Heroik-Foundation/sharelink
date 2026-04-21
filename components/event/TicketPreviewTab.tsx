@@ -17,7 +17,8 @@ export default function TicketPreviewTab({
     payForTicketFree,
     handleSubmit,
     setTab,
-    discountData
+    discountData,
+    isLoading
 }: {
     event: IEvent;
     user: IUserDetail;
@@ -30,19 +31,20 @@ export default function TicketPreviewTab({
     handleSubmit: () => void;
     setTab: (tab: number) => void;
     discountData: any;
+    isLoading?: boolean
 }) {
     const [discountPerctage, setDiscountPerctage] = useState(0);
-    const [discountPrice, setDiscountPrice] = useState(0);
+    const [discountPrice, setDiscountPrice] = useState(-1);
 
     useEffect(() => {
         if (discountData?.data?.discount) {
             const perct =
                 (discountData?.data?.discount / 100 / totalPrices) * 100;
             setDiscountPerctage(perct);
-            setDiscountPrice(discountData?.data?.discount / 100);
+            setDiscountPrice((discountData?.data?.discount / 100) > totalPrices ? 0 : (discountData?.data?.discount / 100) - totalPrices);
         }
     }, [discountData?.data?.discount]);
-    
+
     return (
         <div className="w-full flex flex-col gap-4 text-pr items-center">
             <div className="pb-2 w-full flex gap-2 justify-center items-center relative border-b border-[#E8E8E8]">
@@ -92,42 +94,48 @@ export default function TicketPreviewTab({
                         {formatNumber(totalPrices, event?.currency as any)}
                     </p>
                     <p
-                        className={` ${discountPrice > 0 ? "" : "hidden"} text-sm font-bold `}
+                        className={` ${discountPerctage > 0 ? "" : "hidden"} text-sm font-bold `}
                     >
                         Discount(%)
                     </p>
                     <p
-                        className={` ${discountPrice > 0 ? "" : "hidden"} font-black text-right `}
+                        className={` ${discountPerctage > 0 ? "" : "hidden"} font-black text-right `}
                     >
                         {formatNumber(discountPerctage)}
                     </p>
                     <p
-                        className={` ${discountPrice > 0 ? "" : "hidden"} text-sm font-bold `}
+                        className={` ${discountPerctage > 0 ? "" : "hidden"} text-sm font-bold `}
                     >
                         Discount Prize
                     </p>
                     <p
-                        className={` ${discountPrice > 0 ? "" : "hidden"} font-black text-right `}
+                        className={` ${discountPerctage > 0 ? "" : "hidden"} font-black text-right `}
                     >
                         {formatNumber(discountPrice, event?.currency as any)}
                     </p>
-                    <p className="text-sm font-bold">Service Fee</p>
-                    <p className="font-black text-right">
-                        {formatNumber(
-                            totalPrices > 0 ? serviceFees : 0,
-                            event?.currency as any,
-                        )}
-                    </p>
-                    <p className="text-sm font-bold">Total</p>
-                    <p className="font-black text-right">
+                    {(discountPrice !== 0) && (
+                        <p className="text-sm font-bold">Service Fee</p>
+                    )}
+                    {(discountPrice !== 0) && (
+                        <p className="font-black text-right">
                             {formatNumber(
-                                discountPrice > 0
-                                    ? discountPrice + serviceFees
-                                    : totalPrices > 0
-                                      ? totalPrices + serviceFees
-                                      : totalPrices,
+                                totalPrices > 0 ? serviceFees : 0,
                                 event?.currency as any,
                             )}
+                        </p>
+                    )}
+                    <p className="text-sm font-bold">Total</p>
+                    <p className="font-black text-right">
+                        {formatNumber(
+                            discountPerctage > 0 && discountPrice === 0
+                                ? discountPrice
+                                : discountPerctage > 0
+                                  ? discountPrice + serviceFees
+                                  : totalPrices > 0
+                                    ? totalPrices + serviceFees
+                                    : totalPrices,
+                            event?.currency as any,
+                        )}
                     </p>
                 </div>
             </div>
@@ -144,7 +152,7 @@ export default function TicketPreviewTab({
             <div className="w-full flex items-center border-t justify-between border-[#E8E8E8]">
                 <CustomButton
                     loading={
-                        payForTicket?.isLoading || payForTicketFree?.isLoading
+                        isLoading
                     }
                     isDisabled={
                         payload.length === 0 ||

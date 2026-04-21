@@ -3,13 +3,14 @@ import CustomButton from "../shared/customButton";
 import CustomInput from "../shared/input";
 
 export default function ForgotPasswordTab({
-    formikForgotPassword,
-    forgotMutation,
+    formikForgotPassword, 
     setTab,
+    isLoading
 }: {
     formikForgotPassword: any;
     forgotMutation: any;
     setTab: (tab: number) => void;
+    isLoading?: boolean
 }) {
     return (
         <FormikProvider value={formikForgotPassword}>
@@ -25,7 +26,7 @@ export default function ForgotPasswordTab({
                 </div>
                 <div className="w-full flex flex-col items-center gap-4">
                     <CustomInput name="email" label="Email Address" type="email" placeholder="" />
-                    <CustomButton type="submit" loading={forgotMutation.isLoading} rounded="44px" width="100%" height="50px">
+                    <CustomButton type="submit" loading={isLoading} rounded="44px" width="100%" height="50px">
                         Submit
                     </CustomButton>
                     <p className="text-primary20 text-xs font-medium">

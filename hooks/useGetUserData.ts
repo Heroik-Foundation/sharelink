@@ -8,6 +8,7 @@ import httpService from "@/utils/httpService";
 import { toast } from "@heroui/react";
 
 import type { IParnter } from "../model/user";
+import { TicketResponse } from "@/model/event";
 
 interface EventData {
   [date: string]: any;
@@ -54,7 +55,7 @@ export const useEventByUserId = () => {
     queryKey: ["userticket", id],
     queryFn: async () => {
       const res = await httpService.get(`/events/user-event-ticket/${id}/${userId}`);
-      return res
+      return res?.data?.userTicket as TicketResponse[]
     },
     enabled: !!id,
   });

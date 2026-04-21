@@ -30,7 +30,7 @@ export default function LoginTab({
                         Forgot Password
                     </p>
                     <CustomButton type="submit" loading={isLoading} rounded="44px" width="100%" height="50px">
-                        Continue
+                    Proceed
                     </CustomButton>
                     <p className="text-primary20 text-xs font-medium">
                         First time here?{" "}
