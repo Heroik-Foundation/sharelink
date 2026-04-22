@@ -85,8 +85,6 @@ export default function SmartCalendar({
 
     const currentMonth = new Date().getMonth();
 
-    console.log(currentMonth);
-
     const handleClick = (type: "increase" | "decrease") => {
         if(type === "increase") {
             if(year === maxYear) {

@@ -27,9 +27,7 @@ export default function UserId() {
     const { data, isLoading } = useUserData();
 
     const { data: events, setYear, year } = useUserYearlyEvent()
-    const currentYear = new Date().getFullYear();
-
-    console.log(events);
+    const currentYear = new Date().getFullYear(); 
     
 
     const {
@@ -55,9 +53,7 @@ export default function UserId() {
     //     [data?.bio],
     // );
 
-    const handleDateClick = (date: Date) => {
-        console.log(data);
-        
+    const handleDateClick = (date: Date) => { 
         setMonth(new Date(date));
         setShowModal(true);
     };
