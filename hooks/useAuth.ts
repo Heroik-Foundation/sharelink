@@ -128,8 +128,7 @@ const useAuth = (community?: ICommunity) => {
             }[];
         }) => httpService.post(`/donations/payment-intent`, data),
         onError: (error: any) => {
-            toast.danger(error?.response?.data?.error?.details?.message);
-            setTab(0);
+            toast.danger(error?.response?.data?.error?.details?.message); 
         },
         onSuccess: (data) => {
             const paymentUrl = data?.data?.url;
@@ -245,6 +244,7 @@ const useAuth = (community?: ICommunity) => {
         },
         onSuccess: () => { 
             setTabRefund(2);
+            queryClient.invalidateQueries({ queryKey: ["userticket"] })
         },
     });
 

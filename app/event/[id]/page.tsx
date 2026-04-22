@@ -23,8 +23,7 @@ import { capitalizeFLetter } from "@/utils/capitalLetter";
 import { LabelText } from "@/components/shared";
 import { HiChatBubbleBottomCenterText } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
-import useChat from "@/hooks/useChat";
-import { Metadata } from "next";
+import useChat from "@/hooks/useChat"; 
 
 function SharePage() {
     const { isLoading, data: event } = useGetEventData();
@@ -77,7 +76,7 @@ function SharePage() {
                         <div className=" w-full rounded-2xl flex flex-col gap-2 ">
                             <div className=" w-full flex gap-4">
                                 <div
-                                        onClick={() => setShowHost(true)}
+                                    onClick={() => setShowHost(true)}
                                     role="button"
                                     className=" w-full flex items-center justify-center gap-2 px-2 bg-[#FFFFFF4D] bg-opacity-30 rounded-[10px] h-[50px] "
                                 >
@@ -135,9 +134,9 @@ function SharePage() {
                     {/* Description */}
                     <EventDescription description={event?.description ?? ""} />
 
-                    {event?.eventPledge?.organizations &&
-                        Array.isArray(event.eventPledge.organizations) &&
-                        event.eventPledge.organizations.length > 0 && (
+                    {event?.fundRaiser?.organizations &&
+                        Array.isArray(event.fundRaiser.organizations) &&
+                        event.fundRaiser.organizations.length > 0 && (
                             <div className=" w-full px-4 ">
                                 <div
                                     style={{
@@ -153,19 +152,19 @@ function SharePage() {
                                             When You Join The Event, you Will
                                             Also Have The Chance To Support Our
                                             Chosen Charity Partner{" "}
-                                            {event?.eventPledge
+                                            {event?.fundRaiser
                                                 ?.organizations &&
                                             Array.isArray(
-                                                event.eventPledge.organizations,
+                                                event.fundRaiser.organizations,
                                             ) &&
-                                            event.eventPledge.organizations
+                                            event.fundRaiser.organizations
                                                 .length > 0
-                                                ? typeof event.eventPledge
+                                                ? typeof event.fundRaiser
                                                       .organizations[0] ===
                                                   "string"
-                                                    ? event.eventPledge
+                                                    ? event.fundRaiser
                                                           .organizations[0]
-                                                    : (event.eventPledge
+                                                    : (event.fundRaiser
                                                           .organizations[0]
                                                           ?.name ?? "")
                                                 : ""}{" "}

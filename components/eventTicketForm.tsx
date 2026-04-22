@@ -6,7 +6,6 @@ import { ForgotPasswordTab, LoginTab, SignupTab, VerifyOtpTab } from "./forms";
 import TicketSelectionTab from "./event/TicketSelectionTab";
 import TicketPreviewTab from "./event/TicketPreviewTab";
 import { AppDownloadTab, SuccessTab } from "./event/SuccessTab";
- 
 
 type TicketPayload = {
     numberOfTickets: number;
@@ -38,7 +37,7 @@ export default function EventTicketForm({
         signupMutation,
         formikVerify,
         verifyMutation,
-        formik, 
+        formik,
         tab,
         isLoading,
         setTab,
@@ -55,43 +54,74 @@ export default function EventTicketForm({
 
     const [payload, setPayload] = useState<TicketPayload[]>([]);
     const [totalPrices, setTotalPrices] = useState(0);
+    const [donation, setDonation] = useState(0);
     const [serviceFees, setServiceFees] = useState(0);
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL as string;
 
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("access_token");
 
-    const totalTickets = payload.reduce((total, item) => total + item.numberOfTickets, 0);
+    const totalTickets = payload.reduce(
+        (total, item) => total + item.numberOfTickets,
+        0,
+    );
+
+    const cleanObject = (obj: Record<string, any>): any => {
+        return Object.fromEntries(
+            Object.entries(obj).filter(([_, value]) => {
+                if (value === "" || value === null || value === undefined)
+                    return false;
+                if (typeof value === "number" && value === 0) return false;
+                if (Array.isArray(value) && value.length === 0) return false;
+                return true;
+            }),
+        );
+    };
 
     const getTicketCount = (ticketTypeId: string): number =>
-        payload.find((p) => p.ticketTypeId === ticketTypeId)?.numberOfTickets ?? 0;
+        payload.find((p) => p.ticketTypeId === ticketTypeId)?.numberOfTickets ??
+        0;
 
     const updateTicket = (ticketTypeId: string, action: "add" | "remove") => {
         setPayload((prev) => {
             const existing = prev.find((p) => p.ticketTypeId === ticketTypeId);
 
             if (existing) {
-                const newCount = action === "add"
-                    ? existing.numberOfTickets + 1
-                    : existing.numberOfTickets - 1;
+                const newCount =
+                    action === "add"
+                        ? existing.numberOfTickets + 1
+                        : existing.numberOfTickets - 1;
 
-                if (newCount <= 0) return prev.filter((p) => p.ticketTypeId !== ticketTypeId);
+                if (newCount <= 0)
+                    return prev.filter((p) => p.ticketTypeId !== ticketTypeId);
 
                 return prev.map((p) =>
-                    p.ticketTypeId === ticketTypeId ? { ...p, numberOfTickets: newCount } : p
+                    p.ticketTypeId === ticketTypeId
+                        ? { ...p, numberOfTickets: newCount }
+                        : p,
                 );
             }
 
-            if (action === "add") return [...prev, { ticketTypeId, numberOfTickets: 1 }];
+            if (action === "add")
+                return [...prev, { ticketTypeId, numberOfTickets: 1 }];
 
             return prev;
         });
-    }; 
+    };
 
     const handleSubmit = () => {
-        const ticketData = discountCode?.data?.data?.code ? { eventId: event?._id, ticketTypes: payload, discountCode: discountCode?.data?.data?.code} : { eventId: event?._id, ticketTypes: payload };
-        if (event?.ticketing[0]?.ticketPrice > 0) {
-            payForTicket.mutate(ticketData);
+        const ticketData = {
+            eventId: event?._id,
+            ticketTypes: payload,
+            discountCode: discountCode?.data?.data?.code,
+            donationAmount: donation * 100,
+        };
+
+        const payloadData = cleanObject(ticketData);
+        console.log(payloadData);
+
+        if (event?.ticketing[0]?.ticketPrice > 0 || donation > 0) {
+            payForTicket.mutate(payloadData);
         } else {
             payForTicketFree.mutate(ticketData);
         }
@@ -120,8 +150,12 @@ export default function EventTicketForm({
     // Recalculate ticket subtotal whenever payload or event changes
     useEffect(() => {
         const total = payload.reduce((sum, selected) => {
-            const ticket = event?.ticketing.find((t) => t._id === selected.ticketTypeId);
-            return ticket ? sum + ticket.ticketPrice * selected.numberOfTickets : sum;
+            const ticket = event?.ticketing.find(
+                (t) => t._id === selected.ticketTypeId,
+            );
+            return ticket
+                ? sum + ticket.ticketPrice * selected.numberOfTickets
+                : sum;
         }, 0);
         setTotalPrices(total / 100);
     }, [event, payload]);
@@ -133,12 +167,16 @@ export default function EventTicketForm({
         const rate = convert?.[currency] ?? convert?.gbp ?? 1;
         const hiroekFee = Math.round(BASE_HIROEK_FEE * rate * 100) / 100;
 
-        const fee = Math.round(
-            (hiroekFee + totalPrices * stripeFee.percentage + stripeFee.fixed) * 100
-        ) / 100;
+        const fee =
+            Math.round(
+                (hiroekFee +
+                    (donation + totalPrices) * stripeFee.percentage +
+                    stripeFee.fixed) *
+                    100,
+            ) / 100;
 
         setServiceFees(fee);
-    }, [totalPrices, event?.currency]);
+    }, [totalPrices, event?.currency, donation]);
 
     // Listen for payment confirmation via socket
     useEffect(() => {
@@ -146,6 +184,7 @@ export default function EventTicketForm({
 
         const socket = io(BASE_URL?.replace("/api", ""), { auth: { token } });
         socket.on(`ticket-payment-${userId}`, () => setTab(4));
+        socket.on(`donation-status-${userId}`, () => setTab(4));
 
         return () => {
             socket.disconnect();
@@ -164,15 +203,15 @@ export default function EventTicketForm({
         event,
     };
 
-    const handleDiscount = ( code: string, amount: string ) => {
+    const handleDiscount = (code: string, amount: string) => {
         discountCode.mutate({
             code: code,
-            amount: amount
-        })
-    }
+            amount: amount,
+        });
+    };
 
     return (
-        <div className=" text-foreground " >
+        <div className=" text-foreground ">
             {tab === 0 && (
                 <SignupTab
                     formikSignup={formikSignup}
@@ -224,6 +263,8 @@ export default function EventTicketForm({
                     getTicketCount={getTicketCount}
                     updateTicket={updateTicket}
                     handlePreview={handlePreview}
+                    donation={donation}
+                    setDonation={setDonation}
                 />
             )}
 
@@ -237,16 +278,14 @@ export default function EventTicketForm({
                     handleSubmit={handleSubmit}
                     setTab={setTab}
                     isLoading={isLoading}
+                    donation={donation}
+                    setDonation={setDonation}
                 />
             )}
 
-            {tab === 4 && (
-                <SuccessTab event={event} setTab={setTab} />
-            )}
+            {tab === 4 && <SuccessTab event={event} setTab={setTab} />}
 
-            {tab === 6 && (
-                <AppDownloadTab />
-            )}
+            {tab === 6 && <AppDownloadTab />}
         </div>
     );
 }

@@ -19,6 +19,8 @@ export default function TicketPreviewTab({
     setTab,
     discountData,
     isLoading,
+    donation,
+    setDonation,
 }: {
     event: IEvent;
     user: IUserDetail;
@@ -32,6 +34,8 @@ export default function TicketPreviewTab({
     setTab: (tab: number) => void;
     discountData: any;
     isLoading?: boolean;
+    donation: number;
+    setDonation: (by: number) => void;
 }) {
     const [discountPerctage, setDiscountPerctage] = useState(0);
     const [discountPrice, setDiscountPrice] = useState(-1);
@@ -117,21 +121,31 @@ export default function TicketPreviewTab({
                     >
                         {formatNumber(discountPrice, event?.currency as any)}
                     </p>
+                    <p
+                        className={` ${donation ? "" : " hidden "} text-sm font-bold `}
+                    >
+                        Donation
+                    </p>
+                    <p
+                        className={` ${donation ? "" : " hidden "} font-black text-right `}
+                    >
+                        {formatNumber(donation, event?.currency as any)}
+                    </p>
                     <p className="text-sm font-bold">Service Fee</p>
                     <p className="font-black text-right">
                         {formatNumber(
-                            totalPrices > 0 ? serviceFees : 0,
+                            totalPrices > 0 || donation ? serviceFees : 0,
                             event?.currency as any,
                         )}
                     </p>
                     <p className="text-sm font-bold">Total</p>
                     <p className="font-black text-right">
-                        {formatNumber( 
+                        {formatNumber(
                             discountPerctage > 0
-                                  ? discountPrice + serviceFees
-                                  : totalPrices > 0
-                                    ? totalPrices + serviceFees
-                                    : totalPrices,
+                                ? discountPrice + serviceFees + donation
+                                : totalPrices > 0 || donation > 0
+                                  ? totalPrices + serviceFees + donation
+                                  : totalPrices + donation,
                             event?.currency as any,
                         )}
                     </p>
@@ -151,7 +165,7 @@ export default function TicketPreviewTab({
                 <CustomButton
                     loading={isLoading}
                     isDisabled={
-                        payload.length === 0 ||
+                        (payload.length === 0 && donation === 0)||
                         payForTicket?.isLoading ||
                         payForTicketFree?.isLoading
                     }

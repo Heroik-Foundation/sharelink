@@ -24,6 +24,8 @@ export default function TicketSelectionTab({
     handleDiscount,
     discountData,
     isLoading,
+    donation,
+    setDonation,
 }: {
     event: IEvent;
     user: IUserDetail;
@@ -38,6 +40,8 @@ export default function TicketSelectionTab({
     handleDiscount: (code: string, amount: string) => void;
     isLoading: boolean;
     discountData: any;
+    donation: number;
+    setDonation: (by: number) => void;
 }) {
     const [code, setCode] = useState("");
     const [textIndex, setTextIndex] = useState(-1);
@@ -58,11 +62,13 @@ export default function TicketSelectionTab({
     }, [discountData?.data?.discount]);
 
     const Ticketdetails = (text: string, index: number) => {
-        const bio = text ?? ""; 
+        const bio = text ?? "";
         const displayText = index === textIndex ? bio : textLimit(bio, 50);
 
         return displayText;
     };
+
+    console.log(event);
 
     return (
         <div className="w-full flex flex-col gap-4 items-center text-foreground ">
@@ -197,7 +203,10 @@ export default function TicketSelectionTab({
                                 </p>
                                 <p className="text-[10px] font-medium mt-3 text-primary">
                                     <ReactMarkdown>
-                                        {Ticketdetails(item?.ticketDetails, index)}
+                                        {Ticketdetails(
+                                            item?.ticketDetails,
+                                            index,
+                                        )}
                                     </ReactMarkdown>
                                     <span
                                         onClick={() =>
@@ -217,6 +226,25 @@ export default function TicketSelectionTab({
                     );
                 })}
 
+                {event?.fundRaiser?.organizations[0]?._id && (
+                    <div className=" w-full flex items-center px-2 p-1 gap-2 border border-foreground rounded-lg ">
+                        <div className=" w-[300px] ">
+                            <p className=" text-sm font-bold ">
+                                Please make a donation
+                            </p>
+                        </div>
+                        <input
+                            onChange={(e) =>
+                                setDonation(Number(e.target.value))
+                            }
+                            value={donation === 0 ? "" : donation}
+                            placeholder="0.00"
+                            type="text"
+                            pattern="[0-9]*"
+                            className=" hover:border-0 active:border-0 focus:border-0 px-2 w-[100px] font-semibold rounded-lg h-[35px] "
+                        />
+                    </div>
+                )}
                 {totalPrices > 0 && (
                     <div className=" w-full flex items-center p-1 gap-1 border border-foreground rounded-lg ">
                         <input
@@ -269,10 +297,20 @@ export default function TicketSelectionTab({
                                 event?.currency as any,
                             )}
                         </p>
+                        <p
+                            className={` ${donation ? "" : " hidden "} text-sm font-bold `}
+                        >
+                            Donation
+                        </p>
+                        <p
+                            className={` ${donation ? "" : " hidden "} font-black text-right `}
+                        >
+                            {formatNumber(donation, event?.currency as any)}
+                        </p>
                         <p className="text-sm font-bold">Service Fee</p>
                         <p className="font-black text-right">
                             {formatNumber(
-                                totalPrices > 0 ? serviceFees : 0,
+                                (totalPrices > 0 || donation) ? serviceFees : 0,
                                 event?.currency as any,
                             )}
                         </p>
@@ -280,10 +318,10 @@ export default function TicketSelectionTab({
                         <p className="font-black text-right">
                             {formatNumber(
                                 discountPerctage > 0
-                                    ? discountPrice + serviceFees
-                                    : totalPrices > 0
-                                      ? totalPrices + serviceFees
-                                      : totalPrices,
+                                    ? discountPrice + serviceFees + donation
+                                    : (totalPrices > 0 || donation > 0)
+                                      ? totalPrices + serviceFees + donation
+                                      : totalPrices + donation,
                                 event?.currency as any,
                             )}
                         </p>
@@ -308,7 +346,7 @@ export default function TicketSelectionTab({
                         payForTicket?.isLoading || payForTicketFree?.isLoading
                     }
                     isDisabled={
-                        payload.length === 0 ||
+                        (payload.length === 0 && donation === 0)||
                         payForTicket?.isLoading ||
                         payForTicketFree?.isLoading
                     }
