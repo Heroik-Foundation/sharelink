@@ -83,10 +83,9 @@ export default function SmartCalendar({
         onSelect?.(new Date(year, monthIndex, 1));
     };
 
-    const canGoPrev = year > minYear;
-    const canGoNext = year < maxYear;
+    const currentMonth = new Date().getMonth();
 
-    console.log(year);
+    console.log(currentMonth);
 
     const handleClick = (type: "increase" | "decrease") => {
         if(type === "increase") {
@@ -102,11 +101,7 @@ export default function SmartCalendar({
                 setYear(year - 1)
             }
         }
-    }
-
-    console.log(maxYear);
-    
-    
+    } 
 
     return (
         <div className="w-full max-w-sm flex flex-col gap-3">
@@ -155,7 +150,7 @@ export default function SmartCalendar({
                             className={`
                 rounded-md px-3 py-2 text-sm font-medium transition
                 ${
-                    isActive
+                    (isActive && index+1 >= currentMonth)
                         ? "bg-[#37137F] text-white"
                         : "bg-gray-100 hover:bg-gray-200"
                 }
