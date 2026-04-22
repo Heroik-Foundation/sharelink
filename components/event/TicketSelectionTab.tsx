@@ -8,6 +8,7 @@ import { IUserDetail } from "@/model/user";
 import { useEffect, useState } from "react";
 import { textLimit } from "@/utils/textlimit";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import ReactMarkdown from "react-markdown";
 
 export default function TicketSelectionTab({
     event,
@@ -55,6 +56,13 @@ export default function TicketSelectionTab({
             );
         }
     }, [discountData?.data?.discount]);
+
+    const Ticketdetails = (text: string, index: number) => {
+        const bio = text ?? ""; 
+        const displayText = index === textIndex ? bio : textLimit(bio, 50);
+
+        return displayText;
+    };
 
     return (
         <div className="w-full flex flex-col gap-4 items-center text-foreground ">
@@ -188,19 +196,16 @@ export default function TicketSelectionTab({
                                         dateFormat(item?.salesEndDate)}
                                 </p>
                                 <p className="text-[10px] font-medium mt-3 text-primary">
-                                    {textLimit(
-                                        item?.ticketDetails,
-                                        textIndex === index
-                                            ? item?.ticketDetails.length
-                                            : 50,
-                                    )}{" "}
+                                    <ReactMarkdown>
+                                        {Ticketdetails(item?.ticketDetails, index)}
+                                    </ReactMarkdown>
                                     <span
                                         onClick={() =>
                                             setTextIndex((prev) =>
                                                 prev === index ? -1 : index,
                                             )
                                         }
-                                        className=" text-[#B00062] "
+                                        className={` ${item?.ticketDetails.length > 50 ? "" : " hidden "} text-[#B00062] `}
                                     >
                                         {textIndex === index
                                             ? "See Less"
@@ -273,12 +278,12 @@ export default function TicketSelectionTab({
                         </p>
                         <p className="text-sm font-bold">Total</p>
                         <p className="font-black text-right">
-                            {formatNumber( 
+                            {formatNumber(
                                 discountPerctage > 0
-                                      ? discountPrice + serviceFees
-                                      : totalPrices > 0
-                                        ? totalPrices + serviceFees
-                                        : totalPrices,
+                                    ? discountPrice + serviceFees
+                                    : totalPrices > 0
+                                      ? totalPrices + serviceFees
+                                      : totalPrices,
                                 event?.currency as any,
                             )}
                         </p>
