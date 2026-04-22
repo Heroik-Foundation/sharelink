@@ -77,11 +77,12 @@ function SharePage() {
                         <div className=" w-full rounded-2xl flex flex-col gap-2 ">
                             <div className=" w-full flex gap-4">
                                 <div
+                                        onClick={() => setShowHost(true)}
                                     role="button"
                                     className=" w-full flex items-center justify-center gap-2 px-2 bg-[#FFFFFF4D] bg-opacity-30 rounded-[10px] h-[50px] "
                                 >
                                     <div
-                                        onClick={() => handleShowType("host")}
+                                        // onClick={() => handleShowType("host")}
                                         className=" w-8 h-8 rounded-full "
                                     >
                                         <img
