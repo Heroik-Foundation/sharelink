@@ -18,7 +18,7 @@ export default function TicketPreviewTab({
     handleSubmit,
     setTab,
     discountData,
-    isLoading
+    isLoading,
 }: {
     event: IEvent;
     user: IUserDetail;
@@ -31,7 +31,7 @@ export default function TicketPreviewTab({
     handleSubmit: () => void;
     setTab: (tab: number) => void;
     discountData: any;
-    isLoading?: boolean
+    isLoading?: boolean;
 }) {
     const [discountPerctage, setDiscountPerctage] = useState(0);
     const [discountPrice, setDiscountPrice] = useState(-1);
@@ -41,7 +41,11 @@ export default function TicketPreviewTab({
             const perct =
                 (discountData?.data?.discount / 100 / totalPrices) * 100;
             setDiscountPerctage(perct);
-            setDiscountPrice((discountData?.data?.discount / 100) > totalPrices ? 0 : (discountData?.data?.discount / 100) - totalPrices);
+            setDiscountPrice(
+                discountData?.data?.discount / 100 > totalPrices
+                    ? 0
+                    : discountData?.data?.discount / 100 - totalPrices,
+            );
         }
     }, [discountData?.data?.discount]);
 
@@ -113,23 +117,17 @@ export default function TicketPreviewTab({
                     >
                         {formatNumber(discountPrice, event?.currency as any)}
                     </p>
-                    {(discountPrice !== 0) && (
-                        <p className="text-sm font-bold">Service Fee</p>
-                    )}
-                    {(discountPrice !== 0) && (
-                        <p className="font-black text-right">
-                            {formatNumber(
-                                totalPrices > 0 ? serviceFees : 0,
-                                event?.currency as any,
-                            )}
-                        </p>
-                    )}
-                    <p className="text-sm font-bold">Total</p>
+                    <p className="text-sm font-bold">Service Fee</p>
                     <p className="font-black text-right">
                         {formatNumber(
-                            discountPerctage > 0 && discountPrice === 0
-                                ? discountPrice
-                                : discountPerctage > 0
+                            totalPrices > 0 ? serviceFees : 0,
+                            event?.currency as any,
+                        )}
+                    </p>
+                    <p className="text-sm font-bold">Total</p>
+                    <p className="font-black text-right">
+                        {formatNumber( 
+                            discountPerctage > 0
                                   ? discountPrice + serviceFees
                                   : totalPrices > 0
                                     ? totalPrices + serviceFees
@@ -151,9 +149,7 @@ export default function TicketPreviewTab({
             )}
             <div className="w-full flex items-center border-t justify-between border-[#E8E8E8]">
                 <CustomButton
-                    loading={
-                        isLoading
-                    }
+                    loading={isLoading}
                     isDisabled={
                         payload.length === 0 ||
                         payForTicket?.isLoading ||

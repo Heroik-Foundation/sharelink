@@ -48,7 +48,11 @@ export default function TicketSelectionTab({
             const perct =
                 (discountData?.data?.discount / 100 / totalPrices) * 100;
             setDiscountPerctage(perct);
-            setDiscountPrice((discountData?.data?.discount / 100) > totalPrices ? 0 : (discountData?.data?.discount / 100) - totalPrices);
+            setDiscountPrice(
+                discountData?.data?.discount / 100 > totalPrices
+                    ? 0
+                    : discountData?.data?.discount / 100 - totalPrices,
+            );
         }
     }, [discountData?.data?.discount]);
 
@@ -219,7 +223,7 @@ export default function TicketSelectionTab({
                             <CustomButton
                                 loading={isLoading}
                                 onClick={() =>
-                                    handleDiscount(code, totalPrices + "")
+                                    handleDiscount(code, totalPrices * 100 + "")
                                 }
                                 isDisabled={code ? false : true}
                                 fontSize="12px"
@@ -260,24 +264,17 @@ export default function TicketSelectionTab({
                                 event?.currency as any,
                             )}
                         </p>
-                        {(discountPrice !== 0) && (
-                                <p className="text-sm font-bold">Service Fee</p>
-                            )}
-                        {(discountPrice !== 0) && (
-                                <p className="font-black text-right">
-                                    {formatNumber(
-                                        totalPrices > 0 ? serviceFees : 0,
-                                        event?.currency as any,
-                                    )}
-                                </p>
-                            )}
-                        <p className="text-sm font-bold">Total</p>
+                        <p className="text-sm font-bold">Service Fee</p>
                         <p className="font-black text-right">
                             {formatNumber(
-                                (discountPerctage > 0 &&
-                                    discountPrice === 0)
-                                    ? discountPrice
-                                    : discountPerctage > 0
+                                totalPrices > 0 ? serviceFees : 0,
+                                event?.currency as any,
+                            )}
+                        </p>
+                        <p className="text-sm font-bold">Total</p>
+                        <p className="font-black text-right">
+                            {formatNumber( 
+                                discountPerctage > 0
                                       ? discountPrice + serviceFees
                                       : totalPrices > 0
                                         ? totalPrices + serviceFees
