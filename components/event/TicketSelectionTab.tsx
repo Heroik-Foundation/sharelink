@@ -205,7 +205,7 @@ export default function TicketSelectionTab({
                                                 prev === index ? -1 : index,
                                             )
                                         }
-                                        className={` ${item?.ticketDetails.length > 50 ? "" : " hidden "} text-[#B00062] `}
+                                        className={` ${item?.ticketDetails?.length > 50 ? "" : " hidden "} text-[#B00062] `}
                                     >
                                         {textIndex === index
                                             ? "See Less"
