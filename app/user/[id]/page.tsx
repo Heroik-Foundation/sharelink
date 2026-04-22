@@ -9,10 +9,10 @@ import SmartCalendar from "../../../components/shared/calendar";
 import LoadingAnimation from "../../../components/loadingAnimation";
 import ModalLayout from "../../../components/shared/modalLayout";
 
-import {
-    useCurrentUser,
+import { 
     useEventDataByDate,
     useUserData,
+    useUserYearlyEvent,
 } from "../../../hooks/useGetUserData";
 
 import { dateFormat } from "../../../utils/dateFormat";
@@ -23,7 +23,14 @@ import type { IEvent, IEventTicket } from "../../../model/event";
 import ReactMarkdown from "react-markdown";
 
 export default function UserId() {
+
     const { data, isLoading } = useUserData();
+
+    const { data: events, setYear, year } = useUserYearlyEvent()
+    const currentYear = new Date().getFullYear();
+
+    console.log(events);
+    
 
     const {
         data: dateEvent,
@@ -43,19 +50,21 @@ export default function UserId() {
         if (data?._id) setInternalId(data._id);
     }, [data?._id]);
 
-    const paragraphs = useMemo(
-        () => data?.bio?.split(/\n\s*\n/).filter(Boolean) || [],
-        [data?.bio],
-    );
+    // const paragraphs = useMemo(
+    //     () => data?.bio?.split(/\n\s*\n/).filter(Boolean) || [],
+    //     [data?.bio],
+    // );
 
     const handleDateClick = (date: Date) => {
+        console.log(data);
+        
         setMonth(new Date(date));
         setShowModal(true);
     };
 
     const bio = data?.bio ?? "";
     const isLong = bio.length > 150;
-    const displayText = showBio ? bio : textLimit(bio, 150);
+    const displayText = showBio ? bio : textLimit(bio, 150); 
 
     return (
         <LoadingAnimation loading={isLoading}>
@@ -116,8 +125,11 @@ export default function UserId() {
                                 label="Select A Month & Year To View Availability"
                                 value={month}
                                 onSelect={handleDateClick}
-                                minYear={2024}
-                                maxYear={2040}
+                                minYear={currentYear - 2}
+                                maxYear={currentYear + 2}
+                                activeMonth={events as string[]}
+                                year={year}
+                                setYear={setYear}
                             />
                         </section>
                     </div>

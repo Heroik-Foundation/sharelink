@@ -11,7 +11,7 @@ import type { IParnter } from "../model/user";
 import { TicketResponse } from "@/model/event";
 
 interface EventData {
-  [date: string]: any;
+    [date: string]: any;
 }
 
 /**
@@ -20,27 +20,58 @@ interface EventData {
  * ===============================
  */
 export const useUserData = () => {
-  const { id } = useParams();
+    const { id } = useParams();
 
-  const query = useQuery({
-    queryKey: ["userdata", id],
-    queryFn: async () => {
-      const res = await httpService.get(`/event-partners/${id}`);
-      return res.data.eventPartner as IParnter;
-    },
-    enabled: !!id,
-  });
+    const query = useQuery({
+        queryKey: ["userdata", id],
+        queryFn: async () => {
+            const res = await httpService.get(`/event-partners/${id}`);
+            return res.data.eventPartner as IParnter;
+        },
+        enabled: !!id,
+    });
 
-  useEffect(() => {
-    if (query.error) {
-      const err: any = query.error;
-      toast.danger(err?.response?.data);
-    }
-  }, [query.error]);
+    useEffect(() => {
+        if (query.error) {
+            const err: any = query.error;
+            toast.danger(err?.response?.data);
+        }
+    }, [query.error]);
 
-  return query;
+    return query;
 };
 
+export const useUserYearlyEvent = () => {
+    const { id } = useParams();
+
+    const currentYear = new Date().getFullYear();
+    const [year, setYear] = useState(currentYear);
+
+    const query = useQuery({
+        queryKey: ["yearly", id, year],
+        queryFn: async () => {
+            const res = await httpService.get(
+                `/event-partners/yearly-event-schedule/${id}/${year}`,
+            ); 
+            const keysArray = Object.keys(res.data.events);
+            return keysArray as string[];
+        },
+        enabled: !!id,
+    });
+
+    useEffect(() => {
+        if (query.error) {
+            const err: any = query.error;
+            toast.danger(err?.response?.data);
+        }
+    }, [query.error]);
+
+    return {
+        ...query,
+        setYear,
+        year
+    };
+};
 
 /**
  * ===============================
@@ -48,27 +79,29 @@ export const useUserData = () => {
  * ===============================
  */
 export const useEventByUserId = () => {
-  const { id } = useParams();
-  const userId = localStorage.getItem("userId");
+    const { id } = useParams();
+    const userId = localStorage.getItem("userId");
 
-  const query = useQuery({
-    queryKey: ["userticket", id],
-    queryFn: async () => {
-      const res = await httpService.get(`/events/user-event-ticket/${id}/${userId}`);
-      return res?.data?.userTicket as TicketResponse[]
-    },
-    enabled: !!id,
-  });
+    const query = useQuery({
+        queryKey: ["userticket", id],
+        queryFn: async () => {
+            const res = await httpService.get(
+                `/events/user-event-ticket/${id}/${userId}`,
+            );
+            return res?.data?.userTicket as TicketResponse[];
+        },
+        enabled: !!id,
+    });
 
-  useEffect(() => {
-    if (query.error) {
-      const err: any = query.error;
-      toast.danger(err?.response?.data);
-    }
-  }, [query.error]);
+    useEffect(() => {
+        if (query.error) {
+            const err: any = query.error;
+            toast.danger(err?.response?.data);
+        }
+    }, [query.error]);
 
-  return query;
-}; 
+    return query;
+};
 
 /**
  * ===============================
@@ -76,28 +109,29 @@ export const useEventByUserId = () => {
  * ===============================
  */
 export const useConversationMessageData = () => {
+    const searchParams = useSearchParams();
 
-  const searchParams = useSearchParams(); 
+    const chatId = searchParams.get("id");
 
-  const chatId = searchParams.get("id");
+    const query = useQuery({
+        queryKey: ["Conversation-Message", chatId],
+        queryFn: async () => {
+            const res = await httpService.get(
+                `/conversations/${chatId}/messages`,
+            );
+            return res.data?.messages?.data;
+        },
+        enabled: !!chatId,
+    });
 
-  const query = useQuery({
-    queryKey: ["Conversation-Message", chatId],
-    queryFn: async () => {
-      const res = await httpService.get(`/conversations/${chatId}/messages`);
-      return res.data?.messages?.data
-    },
-    enabled: !!chatId,
-  });
+    useEffect(() => {
+        if (query.error) {
+            const err: any = query.error;
+            toast.danger(err?.response?.data);
+        }
+    }, [query.error]);
 
-  useEffect(() => {
-    if (query.error) {
-      const err: any = query.error;
-      toast.danger(err?.response?.data);
-    }
-  }, [query.error]);
-
-  return query;
+    return query;
 };
 
 /**
@@ -106,28 +140,26 @@ export const useConversationMessageData = () => {
  * ===============================
  */
 export const useCurrentUser = () => {
-  const userId =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("userId")
-      : null;
+    const userId =
+        typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
 
-  const query = useQuery({
-    queryKey: ["current-user", userId],
-    queryFn: async () => {
-      const res = await httpService.get(`/users/${userId}`);
-      return res.data.user as IParnter;
-    },
-    enabled: !!userId,
-  });
+    const query = useQuery({
+        queryKey: ["current-user", userId],
+        queryFn: async () => {
+            const res = await httpService.get(`/users/${userId}`);
+            return res.data.user as IParnter;
+        },
+        enabled: !!userId,
+    });
 
-  useEffect(() => {
-    if (query.error) {
-      const err: any = query.error;
-      toast.danger(err?.response?.data);
-    }
-  }, [query.error]);
+    useEffect(() => {
+        if (query.error) {
+            const err: any = query.error;
+            toast.danger(err?.response?.data);
+        }
+    }, [query.error]);
 
-  return query;
+    return query;
 };
 
 /**
@@ -136,22 +168,22 @@ export const useCurrentUser = () => {
  * ===============================
  */
 export const useCurrencyData = () => {
-  const query = useQuery({
-    queryKey: ["currency-data"],
-    queryFn: async () => {
-      const res = await httpService.get(`/donations/currency-quote`);
-      return res.data.quotes;
-    },
-  });
+    const query = useQuery({
+        queryKey: ["currency-data"],
+        queryFn: async () => {
+            const res = await httpService.get(`/donations/currency-quote`);
+            return res.data.quotes;
+        },
+    });
 
-  useEffect(() => {
-    if (query.error) {
-      const err: any = query.error;
-      toast.danger(err?.response?.data);
-    }
-  }, [query.error]);
+    useEffect(() => {
+        if (query.error) {
+            const err: any = query.error;
+            toast.danger(err?.response?.data);
+        }
+    }, [query.error]);
 
-  return query;
+    return query;
 };
 
 /**
@@ -160,27 +192,27 @@ export const useCurrencyData = () => {
  * ===============================
  */
 export const useEventData = () => {
-  const { id } = useParams();
+    const { id } = useParams();
 
-  const query = useQuery({
-    queryKey: ["event-schedule", id],
-    queryFn: async () => {
-      const res = await httpService.get(
-        `/event-partners/event-schedule/${id}`
-      );
-      return res.data.events as EventData;
-    },
-    enabled: !!id,
-  });
+    const query = useQuery({
+        queryKey: ["event-schedule", id],
+        queryFn: async () => {
+            const res = await httpService.get(
+                `/event-partners/event-schedule/${id}`,
+            );
+            return res.data.events as EventData;
+        },
+        enabled: !!id,
+    });
 
-  useEffect(() => {
-    if (query.error) {
-      const err: any = query.error;
-      toast.danger(err?.response?.data);
-    }
-  }, [query.error]);
+    useEffect(() => {
+        if (query.error) {
+            const err: any = query.error;
+            toast.danger(err?.response?.data);
+        }
+    }, [query.error]);
 
-  return query;
+    return query;
 };
 
 /**
@@ -189,38 +221,38 @@ export const useEventData = () => {
  * ===============================
  */
 export const useEventDataByDate = () => {
-  const [internalId, setInternalId] = useState<string>("");
-  const [month, setMonth] = useState<Date | undefined>();
-  const [showModal, setShowModal] = useState<boolean>(false);
+    const [internalId, setInternalId] = useState<string>("");
+    const [month, setMonth] = useState<Date | undefined>();
+    const [showModal, setShowModal] = useState<boolean>(false);
 
-  const query = useQuery({
-    queryKey: ["event-by-date", internalId, month?.toISOString()],
-    queryFn: async () => {
-      const res = await httpService.get(
-        `/event-partners/event-schedule/${internalId}/${format(
-          month ?? new Date(),
-          "yyyy-MM"
-        )}`
-      );
-      return res.data.events;
-    },
-    enabled: !!internalId && !!month,
-  });
+    const query = useQuery({
+        queryKey: ["event-by-date", internalId, month?.toISOString()],
+        queryFn: async () => {
+            const res = await httpService.get(
+                `/event-partners/event-schedule/${internalId}/${format(
+                    month ?? new Date(),
+                    "yyyy-MM",
+                )}`,
+            );
+            return res.data.events;
+        },
+        enabled: !!internalId && !!month,
+    });
 
-  useEffect(() => {
-    if (query.error) {
-      const err: any = query.error;
-      toast.danger(err?.response?.data);
-    }
-  }, [query.error]);
+    useEffect(() => {
+        if (query.error) {
+            const err: any = query.error;
+            toast.danger(err?.response?.data);
+        }
+    }, [query.error]);
 
-  return {
-    ...query,
-    internalId,
-    setInternalId,
-    month,
-    setMonth,
-    showModal,
-    setShowModal,
-  };
+    return {
+        ...query,
+        internalId,
+        setInternalId,
+        month,
+        setMonth,
+        showModal,
+        setShowModal,
+    };
 };
