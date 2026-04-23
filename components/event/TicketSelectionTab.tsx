@@ -1,8 +1,6 @@
-import { AiOutlineMinusCircle } from "react-icons/ai";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import CustomButton from "../shared/customButton";
+ import CustomButton from "../shared/customButton";
 import { formatNumber } from "../../utils/numberFormat";
-import { dateFormat } from "../../utils/dateFormat";
+import { dateFormat, timeFormat } from "../../utils/dateFormat";
 import type { IEvent } from "../../model/event";
 import { IUserDetail } from "@/model/user";
 import { useEffect, useState } from "react";
@@ -77,7 +75,7 @@ export default function TicketSelectionTab({
                     {event?.name}
                 </p>
                 <p className="text-xs font-bold">
-                    {dateFormat(event?.endTime)}
+                    {dateFormat(event?.endTime)+ " "+timeFormat(event?.endTime)}
                 </p>
                 <p className="text-xs font-semibold">{event?.address}</p>
             </div>
@@ -115,7 +113,7 @@ export default function TicketSelectionTab({
                                         <div className="w-[116px] text-primary px-2 flex justify-between items-center rounded-lg">
                                             <p className="text-[10px] font-semibold text-center">
                                                 {!salesStarted
-                                                    ? `Sales Starts on ${dateFormat(item?.salesStartDate)}`
+                                                    ? `Sales Starts on ${dateFormat(item?.salesStartDate) + " "+timeFormat(item?.salesEndDate)}`
                                                     : now >
                                                         new Date(
                                                             event?.eventEndDate,
@@ -199,7 +197,7 @@ export default function TicketSelectionTab({
                                 </p>
                                 <p className="text-[10px] font-semibold text-primary">
                                     {"Sale Ends On " +
-                                        dateFormat(item?.salesEndDate)}
+                                        dateFormat(item?.salesEndDate) + " "+timeFormat(item?.salesEndDate)}
                                 </p>
                                 <p className="text-[10px] font-medium mt-3 text-primary">
                                     <ReactMarkdown>
