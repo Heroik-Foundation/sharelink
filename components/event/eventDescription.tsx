@@ -11,7 +11,7 @@ export default function EventDescription({
         <div className="w-full flex flex-col font-medium gap-3 px-4 py-4">
             <LabelText>About Event</LabelText>
             {/* <p className="text-sm whitespace-pre-wrap">{description}</p> */}
-            <div dangerouslySetInnerHTML={{ __html: description }} />
+            <div  className="text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: description }} />
         </div>
     );
 }
