@@ -20,8 +20,8 @@ export default function EventHeader({ event, totalTickets }: any) {
                 {event?.name}
             </p>
 
-            <div className="flex gap-2 items-center mt-2 ">
-                <div className=" w-fit ">
+            <div className="flex gap-2 mt-2 ">
+                <div className=" w-fit mt-[2px] ">
                     <LocationIcon block={true} />
                 </div>
                 <p className="text-sm">
