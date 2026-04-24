@@ -21,7 +21,9 @@ export default function EventHeader({ event, totalTickets }: any) {
             </p>
 
             <div className="flex gap-2 items-center mt-2 ">
-                <LocationIcon block={true} />
+                <div className=" w-fit ">
+                    <LocationIcon block={true} />
+                </div>
                 <p className="text-sm">
                     {event?.meetingLink ? "Online" : event?.address}
                 </p>

@@ -23,7 +23,8 @@ import { capitalizeFLetter } from "@/utils/capitalLetter";
 import { LabelText } from "@/components/shared";
 import { HiChatBubbleBottomCenterText } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
-import useChat from "@/hooks/useChat"; 
+import useChat from "@/hooks/useChat";
+import { IoMdEye } from "react-icons/io";
 
 function SharePage() {
     const { isLoading, data: event } = useGetEventData();
@@ -51,6 +52,9 @@ function SharePage() {
         setShowImg(true);
     };
 
+    console.log(event);
+    
+
     return (
         <LoadingAnimation loading={isLoading}>
             <div className=" w-full lg:h-screen relative flex lg:flex-row flex-col pb-22 gap-6 text-primary ">
@@ -65,7 +69,7 @@ function SharePage() {
                             src={event?.photo + ""}
                             alt="photo"
                             fillContainer
-                            style={{ borderRadius: "16px", objectFit: "cover"}}
+                            style={{ borderRadius: "16px", objectFit: "contain" }}
                         />
                         <div className=" bg-black opacity-45 rounded-2xl absolute inset-0 " />
                     </div>
@@ -133,7 +137,31 @@ function SharePage() {
 
                     {/* Description */}
                     <EventDescription description={event?.description ?? ""} />
-
+                    {/* {event?.fundRaiser?.organizations && (
+                        <>
+                            {event?.fundRaiser?.organizations?.length > 0 && (
+                                <div className=" flex w-full gap-3 items-center justify-center ">
+                                    <div className=" flex flex-col gap-2 items-center ">
+                                        <div className=" w-fit bg-[#37137F26] rounded-md px-[10px] h-[25px] flex justify-center items-center ">
+                                            <p className=" font-bold text-sm ">
+                                                Charity Partner(s)
+                                            </p>
+                                        </div>
+                                        <CustomButton
+                                            onClick={() => setShowPartner(true)}
+                                            hasIcon
+                                            icon={<IoMdEye size={"20px"} />}
+                                            rounded="44px"
+                                            width="100%"
+                                            height="50px"
+                                        >
+                                            View Charity Partner(s)
+                                        </CustomButton>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )} */}
                     {event?.fundRaiser?.organizations &&
                         Array.isArray(event.fundRaiser.organizations) &&
                         event.fundRaiser.organizations.length > 0 && (
@@ -152,8 +180,7 @@ function SharePage() {
                                             When You Join The Event, you Will
                                             Also Have The Chance To Support Our
                                             Chosen Charity Partner{" "}
-                                            {event?.fundRaiser
-                                                ?.organizations &&
+                                            {event?.fundRaiser?.organizations &&
                                             Array.isArray(
                                                 event.fundRaiser.organizations,
                                             ) &&
@@ -253,7 +280,7 @@ function SharePage() {
                         </p>
                     </div>
                     <div className=" mt-6 flex flex-col max-h-[70vh] overflow-y-auto h-[70vh] gap-3 ">
-                        {event?.eventPledge?.organizations?.map((item) => {
+                        {event?.fundRaiser?.organizations?.map((item) => {
                             return (
                                 <div className=" w-full flex items-center gap-2 shadow rounded-xl p-3 ">
                                     <div className=" w-[64px] h-[64px] rounded-2xl ">
@@ -283,7 +310,12 @@ function SharePage() {
                 setOpen={setShowHost}
             >
                 <div className=" pb-3 px-4 flex flex-col gap-4 ">
-                    <button onClick={()=> router.push(`/user/${event?.admin?._id}`)} className=" w-full flex items-center gap-3 px-2 bg-[#A73A7A66] bg-opacity-30 rounded-[20px] py-3 ">
+                    <button
+                        onClick={() =>
+                            router.push(`/user/${event?.admin?._id}`)
+                        }
+                        className=" w-full flex items-center gap-3 px-2 bg-[#A73A7A66] bg-opacity-30 rounded-[20px] py-3 "
+                    >
                         <div className=" w-[44px] h-[44px] rounded-full ">
                             <img
                                 className=" w-full h-full rounded-full object-cover "

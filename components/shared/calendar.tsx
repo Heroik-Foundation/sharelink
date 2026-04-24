@@ -1,5 +1,5 @@
 "use client";
- 
+
 import { toast } from "@heroui/react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
@@ -11,8 +11,8 @@ interface Props {
     maxYear?: number;
     disabled?: boolean;
     activeMonth: string[];
-    year: number,
-    setYear: (by: number) => void
+    year: number;
+    setYear: (by: number) => void;
 }
 
 const MONTHS = [
@@ -74,10 +74,9 @@ export default function SmartCalendar({
     maxYear = new Date().getFullYear() + 5,
     disabled = false,
     activeMonth,
-    year, 
-    setYear
+    year,
+    setYear,
 }: Props) {
-
     const handleSelect = (monthIndex: number) => {
         if (disabled) return;
         onSelect?.(new Date(year, monthIndex, 1));
@@ -86,20 +85,20 @@ export default function SmartCalendar({
     const currentMonth = new Date().getMonth();
 
     const handleClick = (type: "increase" | "decrease") => {
-        if(type === "increase") {
-            if(year === maxYear) {
+        if (type === "increase") {
+            if (year === maxYear) {
                 toast.danger("No Event Available");
             } else {
-                setYear(year + 1)
+                setYear(year + 1);
             }
-        } else if( type === "decrease") {
-            if(year === minYear) {
+        } else if (type === "decrease") {
+            if (year === minYear) {
                 toast.danger("No Event Available");
             } else {
-                setYear(year - 1)
+                setYear(year - 1);
             }
         }
-    } 
+    };
 
     return (
         <div className="w-full max-w-sm flex flex-col gap-3">
@@ -120,7 +119,9 @@ export default function SmartCalendar({
                     <IoChevronBack />
                 </button>
 
-                <span className="font-medium text-gray-800">{year ? year : value?.getFullYear()}</span>
+                <span className="font-medium text-gray-800">
+                    {year ? year : value?.getFullYear()}
+                </span>
 
                 <button
                     type="button"
@@ -148,7 +149,7 @@ export default function SmartCalendar({
                             className={`
                 rounded-md px-3 py-2 text-sm font-medium transition
                 ${
-                    (isActive && index >= currentMonth)
+                    isActive && index >= currentMonth
                         ? "bg-[#37137F] text-white"
                         : "bg-gray-100 hover:bg-gray-200"
                 }
