@@ -40,7 +40,49 @@ export default function EventHeader({ event, totalTickets }: any) {
                 </div>
             </div>
 
-            {event?.ticketing?.length > 0 && (
+            <div className=" w-full flex justify-between items-center ">
+                {event?.ticketing?.length > 0 && (
+                    <>
+                        {event?.ticketing[0]?.signUpLimit > 0 && (
+                            <>
+                                <div className=" flex gap-2 items-center ">
+                                    <TicketIcon />
+                                    <p className=" text-sm ">
+                                        {totalTickets === 0
+                                            ? "Sold Out"
+                                            : "Ticket Available"}{" "}
+                                    </p>
+                                </div>
+                            </>
+                        )}
+                        {(event?.ticketing[0]?.signUpLimit === 0 ||
+                            !event?.ticketing[0]?.signUpLimit) && (
+                            <>
+                                {event?.ticketing?.length > 0 && (
+                                    <div className=" flex gap-2 items-center ">
+                                        {(event?.ticketing[0]?.spotsLeft > 0 ||
+                                            !event?.ticketing[0]?.signUpLimit ||
+                                            event?.ticketing[0]?.signUpLimit ===
+                                                0) && <TicketIcon />}
+                                        {event?.ticketing[0]?.spotsLeft ===
+                                            undefined && (
+                                            <p className=" text-sm ">
+                                                {"Ticket Available"}{" "}
+                                            </p>
+                                        )}
+                                        {event?.ticketing[0]?.spotsLeft > 0 && (
+                                            <p className=" text-sm ">
+                                                {"Ticket Available"}{" "}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </>
+                )}
+            </div>
+            {/* {event?.ticketing?.length > 0 && (
                 <div className="flex flex-col gap-2 ">
                     <div className="flex gap-2 items-center">
                         <TicketIcon />
@@ -60,6 +102,51 @@ export default function EventHeader({ event, totalTickets }: any) {
                         </p>
                     </div>
                 </div>
+            )} */}
+
+            {event?.ticketing?.length > 0 && (
+                <>
+                    {(event?.ticketing[0]?.signUpLimit === 0 ||
+                        !event?.ticketing[0]?.signUpLimit) && (
+                        <div className=" flex items-center gap-2 ">
+                            <HiTicket />
+                            {event?.ticketing?.length > 1 && (
+                                <p className=" text-sm font-medium ">From</p>
+                            )}
+                            <p className=" text-sm font-medium ">
+                                {minPrice === 0
+                                    ? "Free"
+                                    : formatNumber(
+                                          minPrice / 100,
+                                          event?.currency as any,
+                                      )}
+                            </p>
+                        </div>
+                    )}
+
+                    {event?.ticketing[0]?.signUpLimit > 0 && (
+                        <>
+                            {totalTickets > 0 && (
+                                <div className=" flex items-center gap-2 ">
+                                    <HiTicket />
+                                    {event?.ticketing?.length > 1 && (
+                                        <p className=" text-sm font-medium ">
+                                            From
+                                        </p>
+                                    )}
+                                    <p className=" text-sm font-medium ">
+                                        {minPrice === 0
+                                            ? "Free"
+                                            : formatNumber(
+                                                  minPrice / 100,
+                                                  event?.currency as any,
+                                              )}
+                                    </p>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </>
             )}
         </div>
     );
