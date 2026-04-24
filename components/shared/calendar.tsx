@@ -148,7 +148,7 @@ export default function SmartCalendar({
                             className={`
                 rounded-md px-3 py-2 text-sm font-medium transition
                 ${
-                    (isActive && index+1 >= currentMonth)
+                    (isActive && index >= currentMonth)
                         ? "bg-[#37137F] text-white"
                         : "bg-gray-100 hover:bg-gray-200"
                 }

@@ -1,4 +1,4 @@
- import CustomButton from "../shared/customButton";
+import CustomButton from "../shared/customButton";
 import { formatNumber } from "../../utils/numberFormat";
 import { dateFormat, timeFormat } from "../../utils/dateFormat";
 import type { IEvent } from "../../model/event";
@@ -74,9 +74,14 @@ export default function TicketSelectionTab({
                 <p className="text-xl font-black text-primary capitalize ">
                     {event?.name}
                 </p>
-                <p className="text-xs font-bold">
-                    {dateFormat(event?.endTime)+ " "+timeFormat(event?.endTime)}
-                </p>
+                <div className=" w-full flex justify-between flex-wrap pr-10 items-center ">
+                    <p className="text-xs font-bold">
+                        {dateFormat(event?.endTime)}
+                    </p>
+                    <p className="text-xs font-bold">
+                        {timeFormat(event?.endTime)}
+                    </p>
+                </div>
                 <p className="text-xs font-semibold">{event?.address}</p>
             </div>
 
@@ -113,7 +118,7 @@ export default function TicketSelectionTab({
                                         <div className="w-[116px] text-primary px-2 flex justify-between items-center rounded-lg">
                                             <p className="text-[10px] font-semibold text-center">
                                                 {!salesStarted
-                                                    ? `Sales Starts on ${dateFormat(item?.salesStartDate) + " "+timeFormat(item?.salesEndDate)}`
+                                                    ? `Sales Starts on ${dateFormat(item?.salesStartDate) + " " + timeFormat(item?.salesEndDate)}`
                                                     : now >
                                                         new Date(
                                                             event?.eventEndDate,
@@ -125,7 +130,7 @@ export default function TicketSelectionTab({
                                             </p>
                                         </div>
                                     ) : hasNoLimit ? (
-                                        <div className="w-fit gap-2 text-primary border-2 px-2 flex justify-between items-center rounded-lg">
+                                        <div className="w-fit gap-4 text-primary px-2 flex justify-between items-center rounded-lg">
                                             <button
                                                 role="button"
                                                 onClick={() =>
@@ -141,7 +146,7 @@ export default function TicketSelectionTab({
                                                 value={count}
                                                 readOnly
                                                 placeholder="0"
-                                                className="focus:border-0 w-[40px] outline-none font-black text-center"
+                                                className="focus:border-0 bg-foreground w-[40px] h-[40px] rounded-md text-white outline-none font-bold text-lg text-center"
                                             />
                                             <button
                                                 role="button"
@@ -197,7 +202,9 @@ export default function TicketSelectionTab({
                                 </p>
                                 <p className="text-[10px] font-semibold text-primary">
                                     {"Sale Ends On " +
-                                        dateFormat(item?.salesEndDate) + " "+timeFormat(item?.salesEndDate)}
+                                        dateFormat(item?.salesEndDate) +
+                                        " " +
+                                        timeFormat(item?.salesEndDate)}
                                 </p>
                                 <p className="text-[10px] font-medium mt-3 text-primary">
                                     <ReactMarkdown>
@@ -308,7 +315,7 @@ export default function TicketSelectionTab({
                         <p className="text-sm font-bold">Service Fee</p>
                         <p className="font-black text-right">
                             {formatNumber(
-                                (totalPrices > 0 || donation) ? serviceFees : 0,
+                                totalPrices > 0 || donation ? serviceFees : 0,
                                 event?.currency as any,
                             )}
                         </p>
@@ -317,7 +324,7 @@ export default function TicketSelectionTab({
                             {formatNumber(
                                 discountPerctage > 0
                                     ? discountPrice + serviceFees + donation
-                                    : (totalPrices > 0 || donation > 0)
+                                    : totalPrices > 0 || donation > 0
                                       ? totalPrices + serviceFees + donation
                                       : totalPrices + donation,
                                 event?.currency as any,
@@ -344,7 +351,7 @@ export default function TicketSelectionTab({
                         payForTicket?.isLoading || payForTicketFree?.isLoading
                     }
                     isDisabled={
-                        (payload.length === 0 && donation === 0)||
+                        (payload.length === 0 && donation === 0) ||
                         payForTicket?.isLoading ||
                         payForTicketFree?.isLoading
                     }

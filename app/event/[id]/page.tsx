@@ -65,7 +65,7 @@ function SharePage() {
                             src={event?.photo + ""}
                             alt="photo"
                             fillContainer
-                            style={{ borderRadius: "16px" }}
+                            style={{ borderRadius: "16px", objectFit: "cover"}}
                         />
                         <div className=" bg-black opacity-45 rounded-2xl absolute inset-0 " />
                     </div>
