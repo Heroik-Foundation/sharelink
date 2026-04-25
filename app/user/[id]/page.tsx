@@ -2,14 +2,14 @@
 
 import Image from "next/image";
 import { HiClock, HiMiniMapPin, HiTicket } from "react-icons/hi2";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 
 import SmartCalendar from "../../../components/shared/calendar";
 import LoadingAnimation from "../../../components/loadingAnimation";
 import ModalLayout from "../../../components/shared/modalLayout";
 
-import { 
+import {
     useEventDataByDate,
     useUserData,
     useUserYearlyEvent,
@@ -23,12 +23,10 @@ import type { IEvent, IEventTicket } from "../../../model/event";
 import ReactMarkdown from "react-markdown";
 
 export default function UserId() {
-
     const { data, isLoading } = useUserData();
 
-    const { data: events, setYear, year } = useUserYearlyEvent()
-    const currentYear = new Date().getFullYear(); 
-    
+    const { data: events, setYear, year } = useUserYearlyEvent();
+    const currentYear = new Date().getFullYear();
 
     const {
         data: dateEvent,
@@ -53,14 +51,14 @@ export default function UserId() {
     //     [data?.bio],
     // );
 
-    const handleDateClick = (date: Date) => { 
+    const handleDateClick = (date: Date) => {
         setMonth(new Date(date));
         setShowModal(true);
     };
 
     const bio = data?.bio ?? "";
     const isLong = bio.length > 150;
-    const displayText = showBio ? bio : textLimit(bio, 150); 
+    const displayText = showBio ? bio : textLimit(bio, 150);
 
     return (
         <LoadingAnimation loading={isLoading}>
@@ -108,7 +106,7 @@ export default function UserId() {
                                         {showBio ? "Show Less" : "Read More"}
                                     </span>
                                 )}
-                            </div> 
+                            </div>
                         </section>
 
                         {/* EVENTS */}
@@ -226,6 +224,14 @@ export default function UserId() {
                                                     <InfoRow
                                                         icon={<HiTicket />}
                                                     >
+                                                        <div className=" flex items-center gap-1 " >
+
+                                                        {item?.ticketing
+                                                            ?.length > 1 && (
+                                                            <p className=" text-xs font-medium ">
+                                                                From
+                                                            </p>
+                                                        )}
                                                         {minPrice === 0
                                                             ? "Free"
                                                             : formatNumber(
@@ -233,7 +239,26 @@ export default function UserId() {
                                                                       100,
                                                                   item.currency as any,
                                                               )}
+                                                        </div>
                                                     </InfoRow>
+                                                    {/* <div className=" flex items-center gap-2 ">
+                                                        <HiTicket />
+                                                        {item?.ticketing
+                                                            ?.length > 1 && (
+                                                            <p className=" text-xs font-medium ">
+                                                                From
+                                                            </p>
+                                                        )}
+                                                        <p className=" text-xs font-medium ">
+                                                            {minPrice === 0
+                                                                ? "Free"
+                                                                : formatNumber(
+                                                                      minPrice /
+                                                                          100,
+                                                                      item?.currency as any,
+                                                                  )}
+                                                        </p>
+                                                    </div> */}
                                                 </a>
                                             );
                                         }),
