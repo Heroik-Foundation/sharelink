@@ -39,16 +39,16 @@ export default function TicketPreviewTab({
 }) {
     const [discountPerctage, setDiscountPerctage] = useState(0);
     const [discountPrice, setDiscountPrice] = useState(-1);
-
+  
     useEffect(() => {
         if (discountData?.data?.discount) {
             const perct =
-                (discountData?.data?.discount / 100 / totalPrices) * 100;
+                ((discountData?.data?.discount / 100) / totalPrices)* 100;
             setDiscountPerctage(perct);
             setDiscountPrice(
                 discountData?.data?.discount / 100 > totalPrices
                     ? 0
-                    : discountData?.data?.discount / 100 - totalPrices,
+                    : totalPrices - (discountData?.data?.discount / 100) ,
             );
         }
     }, [discountData?.data?.discount]);

@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { textLimit } from "@/utils/textlimit";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
+import { IoCheckmark } from "react-icons/io5";
+import { FaCircleCheck } from "react-icons/fa6";
 
 export default function TicketSelectionTab({
     event,
@@ -54,7 +56,7 @@ export default function TicketSelectionTab({
             setDiscountPrice(
                 discountData?.data?.discount / 100 > totalPrices
                     ? 0
-                    : discountData?.data?.discount / 100 - totalPrices,
+                    : totalPrices - discountData?.data?.discount / 100,
             );
         }
     }, [discountData?.data?.discount]);
@@ -66,7 +68,7 @@ export default function TicketSelectionTab({
         return displayText;
     };
 
-    console.log(event);
+    console.log((discountData?.data?.discount / 100 / totalPrices) * 100);
 
     return (
         <div className="w-full flex flex-col gap-4 items-center text-foreground ">
@@ -254,21 +256,35 @@ export default function TicketSelectionTab({
                     <div className=" w-full flex items-center p-1 gap-1 border border-foreground rounded-lg ">
                         <input
                             onChange={(e) => setCode(e.target.value)}
-                            value={code}
+                            value={
+                                discountData?.data?.code
+                                    ? discountData?.data?.code
+                                    : code
+                            }
                             className=" hover:border-0 active:border-0 focus:border-0 px-2 w-full font-semibold rounded-lg h-[35px] "
                         />
                         <div className=" w-fit ">
-                            <CustomButton
-                                loading={isLoading}
-                                onClick={() =>
-                                    handleDiscount(code, totalPrices * 100 + "")
-                                }
-                                isDisabled={code ? false : true}
-                                fontSize="12px"
-                                height="35px"
-                            >
-                                Apply Promo/Voucher Code
-                            </CustomButton>
+                            {!discountData?.data?.discount && (
+                                <CustomButton
+                                    loading={isLoading}
+                                    onClick={() =>
+                                        handleDiscount(
+                                            code,
+                                            totalPrices * 100 + "",
+                                        )
+                                    }
+                                    isDisabled={code ? false : true}
+                                    fontSize="12px"
+                                    height="35px"
+                                >
+                                    Apply Promo/Voucher Code
+                                </CustomButton>
+                            )}
+                            {discountData?.data?.discount && (
+                                <div className=" mr-2 ">
+                                    <FaCircleCheck size={20} color="green" />
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
