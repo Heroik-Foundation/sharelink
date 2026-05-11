@@ -137,31 +137,6 @@ function SharePage() {
 
                     {/* Description */}
                     <EventDescription description={event?.description ?? ""} />
-                    {/* {event?.fundRaiser?.organizations && (
-                        <>
-                            {event?.fundRaiser?.organizations?.length > 0 && (
-                                <div className=" flex w-full gap-3 items-center justify-center ">
-                                    <div className=" flex flex-col gap-2 items-center ">
-                                        <div className=" w-fit bg-[#37137F26] rounded-md px-[10px] h-[25px] flex justify-center items-center ">
-                                            <p className=" font-bold text-sm ">
-                                                Charity Partner(s)
-                                            </p>
-                                        </div>
-                                        <CustomButton
-                                            onClick={() => setShowPartner(true)}
-                                            hasIcon
-                                            icon={<IoMdEye size={"20px"} />}
-                                            rounded="44px"
-                                            width="100%"
-                                            height="50px"
-                                        >
-                                            View Charity Partner(s)
-                                        </CustomButton>
-                                    </div>
-                                </div>
-                            )}
-                        </>
-                    )} */}
                     {event?.fundRaiser?.organizations &&
                         Array.isArray(event.fundRaiser.organizations) &&
                         event.fundRaiser.organizations.length > 0 && (
