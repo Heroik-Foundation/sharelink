@@ -82,8 +82,8 @@ export default function TicketPreviewTab({
                     <p className=" font-medium ">{user?.phone}</p>
                 </div>
                 <div className="w-full flex justify-between gap-4">
-                    <p className="font-semibold">Event Name</p>
-                    <p className=" font-medium ">
+                    <p className="font-semibold w-[200px] ">Event Name</p>
+                    <p className=" font-medium w-full text-right ">
                         {textLimit(event?.name, 30)}
                     </p>
                 </div>
