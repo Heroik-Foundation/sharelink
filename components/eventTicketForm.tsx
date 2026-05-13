@@ -22,7 +22,7 @@ const STRIPE_FEES: Record<string, { percentage: number; fixed: number }> = {
     default: { percentage: 0.0325, fixed: 0.3 },
 };
 
-const BASE_HIROEK_FEE = 0.6;
+const BASE_HIROEK_FEE = 1;
 
 export default function EventTicketForm({
     event,
@@ -173,8 +173,8 @@ export default function EventTicketForm({
                     (donation + totalPrices) * stripeFee.percentage +
                     stripeFee.fixed) *
                     100,
-            ) / 100;
-
+            ) / 100; 
+            
         setServiceFees(fee);
     }, [totalPrices, event?.currency, donation]);
 
