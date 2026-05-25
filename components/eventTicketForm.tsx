@@ -141,11 +141,11 @@ export default function EventTicketForm({
     }, []);
 
     // Sync email into verify formik field
-    useEffect(() => {
-        if (!formikVerify?.values?.phoneOrEmail) {
-            formikVerify.setFieldValue("phoneOrEmail", email);
-        }
-    }, [email]);
+    // useEffect(() => {
+    //     if (!formikVerify?.values?.phoneOrEmail) {
+    //         formikVerify.setFieldValue("phoneOrEmail", email);
+    //     }
+    // }, [email]);
 
     // Recalculate ticket subtotal whenever payload or event changes
     useEffect(() => {

@@ -4,8 +4,7 @@ import CustomButton from "../shared/customButton";
 import { useEffect } from "react";
 
 export default function VerifyOtpTab({
-    formikVerify,
-    verifyMutation,
+    formikVerify, 
     isLoading,
     email
 }: {
