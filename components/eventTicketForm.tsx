@@ -226,6 +226,7 @@ export default function EventTicketForm({
                     formikVerify={formikVerify}
                     verifyMutation={verifyMutation}
                     isLoading={isLoading}
+                    email={email}
                 />
             )}
 

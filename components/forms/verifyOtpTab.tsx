@@ -1,16 +1,26 @@
-import { FormikProvider } from "formik";
+import { FormikProps, FormikProvider } from "formik";
 import { InputOTP } from "@heroui/react"; // ✅ Correct import
 import CustomButton from "../shared/customButton";
+import { useEffect } from "react";
 
 export default function VerifyOtpTab({
     formikVerify,
     verifyMutation,
-    isLoading
+    isLoading,
+    email
 }: {
-    formikVerify: any;
+    formikVerify: FormikProps<any>;
     verifyMutation: any;
-    isLoading?: boolean
-}) {
+    isLoading?: boolean;
+    email?: string;
+}) { 
+
+    useEffect(() => {
+        if (!formikVerify?.values?.phoneOrEmail) {
+            formikVerify.setFieldValue("phoneOrEmail", email);
+        }
+    }, [email]);
+    
     return (
         <FormikProvider value={formikVerify}>
             <form

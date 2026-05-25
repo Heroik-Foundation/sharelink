@@ -160,6 +160,7 @@ export default function CommunityModal({
         formikForgotPassword,
         joinChannel,
         setTab,
+        email,
         tab,
     } = useAuth(channel);
 
@@ -187,6 +188,8 @@ export default function CommunityModal({
                 <VerifyOtpTab
                     formikVerify={formikVerify}
                     verifyMutation={verifyMutation}
+                    email={email}
+                    isLoading={isLoading}
                 />
             )}
 
