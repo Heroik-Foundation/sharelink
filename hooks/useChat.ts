@@ -16,8 +16,7 @@ const useChat = () => {
 
     const id = searchParams.get("id");
     const eventId = params?.id as string;
-
-    const [inputMessage, setInputMessage] = useState("");
+    const [ tab, setTab ] = useState(0) 
 
     const queryClient = useQueryClient();
 
@@ -36,6 +35,7 @@ const useChat = () => {
 
         onError: (error: any) => {
             toast.danger(error?.response?.data?.error?.details?.message);
+            setTab(1)
         },
 
         onSuccess: (data) => { 
@@ -148,6 +148,7 @@ const useChat = () => {
         loadingJoinEvent,
         createConversationWithCreator,
         loadingConversationWithCreator,
+        tab
     };
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useGetEventData from "../../../hooks/useGetEventData";
 
 import LoadingAnimation from "../../../components/loadingAnimation";
@@ -24,16 +24,16 @@ import { LabelText } from "@/components/shared";
 import { HiChatBubbleBottomCenterText } from "react-icons/hi2";
 import { useRouter } from "next/navigation";
 import useChat from "@/hooks/useChat";
-import { IoMdEye } from "react-icons/io";
+import useAuth from "@/hooks/useAuth";
+import { LoginTab } from "@/components/forms";
 
 function SharePage() {
     const { isLoading, data: event } = useGetEventData();
     const { data: currencyData } = useCurrencyData();
 
-    const { createConversation } = useChat();
+    const { createConversation, tab, loadingConversation } = useChat();
 
     const router = useRouter();
-    console.log(event);
 
     const [openDonate, setOpenDonate] = useState(false);
     const [openTicket, setOpenTicket] = useState(false);
@@ -52,8 +52,17 @@ function SharePage() {
         setShowImg(true);
     };
 
-    console.log(event);
-    
+    const { formik, tab: tabIndex, setTab, isLoading: loading } = useAuth();
+
+    useEffect(() => {
+        if (tabIndex === 5) {
+            createConversation({
+                userTwo: event?.admin?._id + "",
+                userType: event?.adminType + "",
+                userTwoEvent: event?._id + "",
+            });
+        }
+    }, [tabIndex]);
 
     return (
         <LoadingAnimation loading={isLoading}>
@@ -69,7 +78,10 @@ function SharePage() {
                             src={event?.photo + ""}
                             alt="photo"
                             fillContainer
-                            style={{ borderRadius: "16px", objectFit: "contain" }}
+                            style={{
+                                borderRadius: "16px",
+                                objectFit: "contain",
+                            }}
                         />
                         <div className=" bg-black opacity-45 rounded-2xl absolute inset-0 " />
                     </div>
@@ -284,56 +296,69 @@ function SharePage() {
                 open={showHost}
                 setOpen={setShowHost}
             >
-                <div className=" pb-3 px-4 flex flex-col gap-4 ">
-                    <button
-                        onClick={() =>
-                            router.push(`/user/${event?.admin?._id}`)
-                        }
-                        className=" w-full flex items-center gap-3 px-2 bg-[#A73A7A66] bg-opacity-30 rounded-[20px] py-3 "
-                    >
-                        <div className=" w-[44px] h-[44px] rounded-full ">
-                            <img
-                                className=" w-full h-full rounded-full object-cover "
-                                src={
-                                    event?.admin?.photo
-                                        ? event?.admin?.photo
-                                        : event?.admin?.logo
+                <>
+                    {tab === 0 && (
+                        <div className=" pb-3 px-4 flex flex-col gap-4 ">
+                            <button
+                                onClick={() =>
+                                    router.push(`/user/${event?.admin?._id}`)
                                 }
-                                alt="image"
-                            />
-                        </div>
-                        <div className=" flex flex-col ">
-                            <div className=" font-bold text-[12px] flex justify-center items-center text-white bg-[#37137F] rounded h-[20px] w-[85px] ">
-                                Event Host:
+                                className=" w-full flex items-center gap-3 px-2 bg-[#A73A7A66] bg-opacity-30 rounded-[20px] py-3 "
+                            >
+                                <div className=" w-[44px] h-[44px] rounded-full ">
+                                    <img
+                                        className=" w-full h-full rounded-full object-cover "
+                                        src={
+                                            event?.admin?.photo
+                                                ? event?.admin?.photo
+                                                : event?.admin?.logo
+                                        }
+                                        alt="image"
+                                    />
+                                </div>
+                                <div className=" flex flex-col ">
+                                    <div className=" font-bold text-[12px] flex justify-center items-center text-white bg-[#37137F] rounded h-[20px] w-[85px] ">
+                                        Event Host:
+                                    </div>
+                                    <p className=" font-semibold text-[14px] text-center text-[#37137F] ">
+                                        {event?.admin?.fullname ??
+                                            event?.admin?.name}
+                                    </p>
+                                </div>
+                            </button>
+                            <CustomButton
+                                hasFrontIcon
+                                icon={<HiChatBubbleBottomCenterText />}
+                                height="40px"
+                                rounded="999px"
+                                loading={loadingConversation}
+                                onClick={() =>
+                                    createConversation({
+                                        userTwo: event?.admin?._id + "",
+                                        userType: event?.adminType + "",
+                                        userTwoEvent: event?._id + "",
+                                    })
+                                }
+                            >
+                                Message Event Host
+                            </CustomButton>
+                            <div
+                                onClick={() => setShowHost(false)}
+                                role="button"
+                                className=" w-full flex justify-center items-center text-[#CC1B1B] font-semibold text-sm cursor-pointer "
+                            >
+                                Close
                             </div>
-                            <p className=" font-semibold text-[14px] text-center text-[#37137F] ">
-                                {event?.admin?.fullname ?? event?.admin?.name}
-                            </p>
                         </div>
-                    </button>
-                    <CustomButton
-                        hasFrontIcon
-                        icon={<HiChatBubbleBottomCenterText />}
-                        height="40px"
-                        rounded="999px"
-                        onClick={() =>
-                            createConversation({
-                                userTwo: event?.admin?._id + "",
-                                userType: event?.adminType + "",
-                                userTwoEvent: event?._id + "",
-                            })
-                        }
-                    >
-                        Message Event Host
-                    </CustomButton>
-                    <div
-                        onClick={() => setShowHost(false)}
-                        role="button"
-                        className=" w-full flex justify-center items-center text-[#CC1B1B] font-semibold text-sm cursor-pointer "
-                    >
-                        Close
-                    </div>
-                </div>
+                    )}
+                    {tab === 1 && (
+                        <LoginTab
+                            formik={formik}
+                            isLoading={loading}
+                            setTab={setTab}
+                        />
+                    )}
+                </>
             </ModalLayout>
             <ModalLayout
                 placement="center"
