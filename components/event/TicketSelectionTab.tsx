@@ -125,10 +125,10 @@ export default function TicketSelectionTab({
                                                         new Date(
                                                             event?.eventEndDate,
                                                         )
-                                                      ? "Event Ended"
-                                                      : !salesOngoing
-                                                        ? "Sales Ended"
-                                                        : "Ticket Sold Out"}
+                                                        ? "Event Ended"
+                                                        : !salesOngoing
+                                                            ? "Sales Ended"
+                                                            : "Ticket Sold Out"}
                                             </p>
                                         </div>
                                     ) : hasNoLimit ? (
@@ -233,7 +233,7 @@ export default function TicketSelectionTab({
                     );
                 })}
 
-                {event?.fundRaiser?.organizations[0]?._id && (
+                {/* {event?.fundRaiser?.organizations[0]?._id && (
                     <div className=" w-full flex items-center px-2 p-1 gap-2 border border-foreground rounded-lg ">
                         <div className=" w-[300px] ">
                             <p className=" text-sm font-bold ">
@@ -251,7 +251,7 @@ export default function TicketSelectionTab({
                             className=" hover:border-0 active:border-0 focus:border-0 px-2 w-[100px] font-semibold rounded-lg h-[35px] "
                         />
                     </div>
-                )}
+                )} */}
                 {totalPrices > 0 && (
                     <div className=" w-full flex items-center p-1 gap-1 border border-foreground rounded-lg ">
                         <input
@@ -341,8 +341,8 @@ export default function TicketSelectionTab({
                                 discountPerctage > 0
                                     ? discountPrice + serviceFees + donation
                                     : totalPrices > 0 || donation > 0
-                                      ? totalPrices + serviceFees + donation
-                                      : totalPrices + donation,
+                                        ? totalPrices + serviceFees + donation
+                                        : totalPrices + donation,
                                 event?.currency as any,
                             )}
                         </p>
