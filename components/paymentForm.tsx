@@ -121,7 +121,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = (props) => {
 };
 
 const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUB_KEY as string,
+    "pk_test_51JnO6tLn8PJ59ABE0TOyJjKepC8cZ79Is85jc5RghwQtxLbDgQ3ROODPBgyXBrMtUWXQvCX72z4RRDwjQjCJDPZo00MUS3GiFo",
 );
 
 interface PaymentProps {
