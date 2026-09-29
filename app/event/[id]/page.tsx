@@ -120,7 +120,7 @@ function SharePage() {
                                             {textLimit(
                                                 event?.admin?.fullname
                                                     ? event?.admin?.fullname +
-                                                          ""
+                                                    ""
                                                     : event?.admin?.name + "",
                                                 14,
                                             )}
@@ -148,7 +148,9 @@ function SharePage() {
                     </div>
 
                     {/* Description */}
-                    <EventDescription description={event?.description ?? ""} />
+                    <div className=" w-full px-4 ">
+                        <EventDescription content={event?.description + ""} />
+                    </div>
                     {event?.fundRaiser?.organizations &&
                         Array.isArray(event.fundRaiser.organizations) &&
                         event.fundRaiser.organizations.length > 0 && (
@@ -168,19 +170,19 @@ function SharePage() {
                                             Also Have The Chance To Support Our
                                             Chosen Charity Partner{" "}
                                             {event?.fundRaiser?.organizations &&
-                                            Array.isArray(
-                                                event.fundRaiser.organizations,
-                                            ) &&
-                                            event.fundRaiser.organizations
-                                                .length > 0
+                                                Array.isArray(
+                                                    event.fundRaiser.organizations,
+                                                ) &&
+                                                event.fundRaiser.organizations
+                                                    .length > 0
                                                 ? typeof event.fundRaiser
-                                                      .organizations[0] ===
-                                                  "string"
+                                                    .organizations[0] ===
+                                                    "string"
                                                     ? event.fundRaiser
-                                                          .organizations[0]
+                                                        .organizations[0]
                                                     : (event.fundRaiser
-                                                          .organizations[0]
-                                                          ?.name ?? "")
+                                                        .organizations[0]
+                                                        ?.name ?? "")
                                                 : ""}{" "}
                                             With A Donation.
                                         </p>
@@ -374,8 +376,8 @@ function SharePage() {
                             showType === "event"
                                 ? event?.photo
                                 : event?.admin?.photo
-                                  ? event?.admin?.photo
-                                  : event?.admin?.logo
+                                    ? event?.admin?.photo
+                                    : event?.admin?.logo
                         }
                         alt="image"
                     />
