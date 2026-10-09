@@ -203,13 +203,13 @@ export default function TicketSelectionTab({
                                 <p className=" text-[10px] font-medium text-primary ">
                                     ({item?.spotsLeft} Tickets Available:)
                                 </p>
-                                <p className="text-[10px] font-semibold text-primary">
+                                <p className="text-[10px] font-semibold mb-4 text-primary">
                                     {"Sale Ends On " +
                                         dateFormat(item?.salesEndDate) +
                                         " " +
                                         timeFormat(item?.salesEndDate)}
                                 </p>
-                                <MarkdownPreview content={item?.ticketDetails} />
+                                <MarkdownPreview content={item?.ticketDetails} collapsible={true} />
                             </div>
                         </div>
                     );
