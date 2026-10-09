@@ -9,6 +9,7 @@ import { FaMinus, FaPlus } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import { IoCheckmark } from "react-icons/io5";
 import { FaCircleCheck } from "react-icons/fa6";
+import MarkdownPreview from "./eventDescription";
 
 export default function TicketSelectionTab({
     event,
@@ -125,10 +126,10 @@ export default function TicketSelectionTab({
                                                         new Date(
                                                             event?.eventEndDate,
                                                         )
-                                                      ? "Event Ended"
-                                                      : !salesOngoing
-                                                        ? "Sales Ended"
-                                                        : "Ticket Sold Out"}
+                                                        ? "Event Ended"
+                                                        : !salesOngoing
+                                                            ? "Sales Ended"
+                                                            : "Ticket Sold Out"}
                                             </p>
                                         </div>
                                     ) : hasNoLimit ? (
@@ -208,26 +209,7 @@ export default function TicketSelectionTab({
                                         " " +
                                         timeFormat(item?.salesEndDate)}
                                 </p>
-                                <p className="text-[10px] font-medium mt-3 text-primary">
-                                    <ReactMarkdown>
-                                        {Ticketdetails(
-                                            item?.ticketDetails,
-                                            index,
-                                        )}
-                                    </ReactMarkdown>
-                                    <span
-                                        onClick={() =>
-                                            setTextIndex((prev) =>
-                                                prev === index ? -1 : index,
-                                            )
-                                        }
-                                        className={` ${item?.ticketDetails?.length > 50 ? "" : " hidden "} text-[#B00062] `}
-                                    >
-                                        {textIndex === index
-                                            ? "See Less"
-                                            : "View more"}
-                                    </span>
-                                </p>
+                                <MarkdownPreview content={item?.ticketDetails} />
                             </div>
                         </div>
                     );
@@ -341,8 +323,8 @@ export default function TicketSelectionTab({
                                 discountPerctage > 0
                                     ? discountPrice + serviceFees + donation
                                     : totalPrices > 0 || donation > 0
-                                      ? totalPrices + serviceFees + donation
-                                      : totalPrices + donation,
+                                        ? totalPrices + serviceFees + donation
+                                        : totalPrices + donation,
                                 event?.currency as any,
                             )}
                         </p>
