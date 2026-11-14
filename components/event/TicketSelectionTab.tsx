@@ -118,7 +118,7 @@ export default function TicketSelectionTab({
                                     </p>
 
                                     {isUnavailable ? (
-                                        <div className="w-[116px] text-primary px-2 flex justify-between items-center rounded-lg">
+                                        <div className="w-29 text-primary px-2 flex justify-between items-center rounded-lg">
                                             <p className="text-[10px] font-semibold text-center">
                                                 {!salesStarted
                                                     ? `Sales Starts on ${dateFormat(item?.salesStartDate) + " " + timeFormat(item?.salesEndDate)}`
@@ -149,7 +149,7 @@ export default function TicketSelectionTab({
                                                 value={count}
                                                 readOnly
                                                 placeholder="0"
-                                                className="focus:border-0 bg-foreground w-[40px] h-[40px] rounded-md text-white outline-none font-bold text-lg text-center"
+                                                className="focus:border-0 bg-foreground w-10 h-10 rounded-md text-white outline-none font-bold text-lg text-center"
                                             />
                                             <button
                                                 role="button"
@@ -180,7 +180,7 @@ export default function TicketSelectionTab({
                                                 value={count}
                                                 readOnly
                                                 placeholder="0"
-                                                className="focus:border-0 rounded-md bg-foreground w-[30px] h-[31px] text-white outline-none text-center"
+                                                className="focus:border-0 rounded-md bg-foreground w-7.5 h-7.75 text-white outline-none text-center"
                                             />
                                             <button
                                                 role="button"
@@ -217,7 +217,7 @@ export default function TicketSelectionTab({
 
                 {event?.fundRaiser?.organizations[0]?._id && (
                     <div className=" w-full flex items-center px-2 p-1 gap-2 border border-foreground rounded-lg ">
-                        <div className=" w-[300px] ">
+                        <div className=" w-75 ">
                             <p className=" text-sm font-bold ">
                                 Please make a donation
                             </p>
@@ -230,7 +230,7 @@ export default function TicketSelectionTab({
                             placeholder="0.00"
                             type="text"
                             pattern="[0-9]*"
-                            className=" hover:border-0 active:border-0 focus:border-0 px-2 w-[100px] font-semibold rounded-lg h-[35px] "
+                            className=" hover:border-0 active:border-0 focus:border-0 px-2 w-25 font-semibold rounded-lg h-8.75 "
                         />
                     </div>
                 )}
@@ -243,7 +243,7 @@ export default function TicketSelectionTab({
                                     ? discountData?.data?.code
                                     : code
                             }
-                            className=" hover:border-0 active:border-0 focus:border-0 px-2 w-full font-semibold rounded-lg h-[35px] "
+                            className=" hover:border-0 active:border-0 focus:border-0 px-2 w-full font-semibold rounded-lg h-8.75 "
                         />
                         <div className=" w-fit ">
                             {!discountData?.data?.discount && (

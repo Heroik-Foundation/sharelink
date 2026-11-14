@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { toast } from "@heroui/react";
 import type { IEvent } from "../model/event";
 import useAuth from "../hooks/useAuth";
 import { ForgotPasswordTab, LoginTab, SignupTab, VerifyOtpTab } from "./forms";
@@ -83,6 +84,49 @@ export default function EventTicketForm({
         0;
 
     const updateTicket = (ticketTypeId: string, action: "add" | "remove") => {
+        if (action === "add") {
+            const targetTicket = event?.ticketing?.find(
+                (t) => t._id === ticketTypeId,
+            );
+            const isTargetFree = (targetTicket?.ticketPrice ?? 0) === 0;
+
+            const existingFreeTicket = payload.find((p) => {
+                if (p.numberOfTickets <= 0) return false;
+                const ticket = event?.ticketing?.find(
+                    (t) => t._id === p.ticketTypeId,
+                );
+                return (ticket?.ticketPrice ?? 0) === 0;
+            });
+
+            const existingPaidTicket = payload.find((p) => {
+                if (p.numberOfTickets <= 0) return false;
+                const ticket = event?.ticketing?.find(
+                    (t) => t._id === p.ticketTypeId,
+                );
+                return (ticket?.ticketPrice ?? 0) > 0;
+            });
+
+            if (existingFreeTicket && existingFreeTicket.ticketTypeId !== ticketTypeId) {
+                if (isTargetFree) {
+                    toast.danger(
+                        "You cannot select another ticket when a free ticket is selected.",
+                    );
+                } else {
+                    toast.danger(
+                        "You cannot select a paid ticket when a free ticket is selected.",
+                    );
+                }
+                return;
+            }
+
+            if (existingPaidTicket && isTargetFree) {
+                toast.danger(
+                    "You cannot select a free ticket when a paid ticket is already selected.",
+                );
+                return;
+            }
+        }
+
         setPayload((prev) => {
             const existing = prev.find((p) => p.ticketTypeId === ticketTypeId);
 
@@ -120,7 +164,7 @@ export default function EventTicketForm({
         const payloadData = cleanObject(ticketData);
         console.log(payloadData);
 
-        if (event?.ticketing[0]?.ticketPrice > 0 || donation > 0) {
+        if (totalPrices > 0 || donation > 0) {
             payForTicket.mutate(payloadData);
         } else {
             payForTicketFree.mutate(ticketData);

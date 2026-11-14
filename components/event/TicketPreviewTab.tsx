@@ -39,16 +39,16 @@ export default function TicketPreviewTab({
 }) {
     const [discountPerctage, setDiscountPerctage] = useState(0);
     const [discountPrice, setDiscountPrice] = useState(-1);
-  
+
     useEffect(() => {
         if (discountData?.data?.discount) {
             const perct =
-                ((discountData?.data?.discount / 100) / totalPrices)* 100;
+                ((discountData?.data?.discount / 100) / totalPrices) * 100;
             setDiscountPerctage(perct);
             setDiscountPrice(
                 discountData?.data?.discount / 100 > totalPrices
                     ? 0
-                    : totalPrices - (discountData?.data?.discount / 100) ,
+                    : totalPrices - (discountData?.data?.discount / 100),
             );
         }
     }, [discountData?.data?.discount]);
@@ -82,7 +82,7 @@ export default function TicketPreviewTab({
                     <p className=" font-medium ">{user?.phone}</p>
                 </div>
                 <div className="w-full flex justify-between gap-4">
-                    <p className="font-semibold w-[200px] ">Event Name</p>
+                    <p className="font-semibold w-50 ">Event Name</p>
                     <p className=" font-medium w-full text-right ">
                         {textLimit(event?.name, 50)}
                     </p>
@@ -144,8 +144,8 @@ export default function TicketPreviewTab({
                             discountPerctage > 0
                                 ? discountPrice + serviceFees + donation
                                 : totalPrices > 0 || donation > 0
-                                  ? totalPrices + serviceFees + donation
-                                  : totalPrices + donation,
+                                    ? totalPrices + serviceFees + donation
+                                    : totalPrices + donation,
                             event?.currency as any,
                         )}
                     </p>
@@ -165,7 +165,7 @@ export default function TicketPreviewTab({
                 <CustomButton
                     loading={isLoading}
                     isDisabled={
-                        (payload.length === 0 && donation === 0)||
+                        (payload.length === 0 && donation === 0) ||
                         payForTicket?.isLoading ||
                         payForTicketFree?.isLoading
                     }
