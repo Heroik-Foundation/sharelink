@@ -44,6 +44,7 @@ export default function TicketSelectionTab({
     donation: number;
     setDonation: (by: number) => void;
 }) {
+
     const [code, setCode] = useState("");
     const [textIndex, setTextIndex] = useState(-1);
     const [discountPerctage, setDiscountPerctage] = useState(0);
