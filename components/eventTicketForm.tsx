@@ -167,7 +167,7 @@ export default function EventTicketForm({
         if (totalPrices > 0 || donation > 0) {
             payForTicket.mutate(payloadData);
         } else {
-            payForTicketFree.mutate(ticketData);
+            payForTicket.mutate(ticketData);
         }
     };
 
@@ -216,9 +216,9 @@ export default function EventTicketForm({
                 (hiroekFee +
                     (donation + totalPrices) * stripeFee.percentage +
                     stripeFee.fixed) *
-                    100,
-            ) / 100; 
-            
+                100,
+            ) / 100;
+
         setServiceFees(fee);
     }, [totalPrices, event?.currency, donation]);
 

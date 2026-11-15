@@ -72,7 +72,7 @@ function SharePage() {
 
                     <div
                         onClick={() => handleShowType("event")}
-                        className=" w-full lg:h-[300px] h-[300px] relative "
+                        className=" w-full lg:h-75 h-75 relative "
                     >
                         <CustomImage
                             src={event?.photo + ""}
@@ -88,13 +88,13 @@ function SharePage() {
 
                     {/* Header */}
 
-                    <div className=" w-full -mt-[150px] z-20 px-3  ">
+                    <div className=" w-full -mt-37.5 z-20 px-3  ">
                         <div className=" w-full rounded-2xl flex flex-col gap-2 ">
                             <div className=" w-full flex gap-4">
                                 <div
                                     onClick={() => setShowHost(true)}
                                     role="button"
-                                    className=" w-full flex items-center justify-center gap-2 px-2 bg-[#FFFFFF4D] bg-opacity-30 rounded-[10px] h-[50px] "
+                                    className=" w-full flex items-center justify-center gap-2 px-2 bg-[#FFFFFF4D] bg-opacity-30 rounded-[10px] h-12.5 "
                                 >
                                     <div
                                         // onClick={() => handleShowType("host")}
@@ -113,7 +113,7 @@ function SharePage() {
                                         onClick={() => setShowHost(true)}
                                         className=" flex flex-col items-center justify-center "
                                     >
-                                        <div className=" font-bold text-[10px] flex justify-center items-center text-white bg-[#37137FBF] rounded h-[18px] w-[75px] ">
+                                        <div className=" font-bold text-[10px] flex justify-center items-center text-white bg-[#37137FBF] rounded h-4.5 w-18.75 ">
                                             Event Host:
                                         </div>
                                         <p className=" font-bold text-[12px] text-center text-white ">
@@ -159,7 +159,7 @@ function SharePage() {
                                     style={{
                                         boxShadow: "0px 0px 4px 0px #00000040",
                                     }}
-                                    className="lg:max-w-[500px] lg:mx-auto rounded-[20px] py-4 px-6 flex w-full items-center justify-center"
+                                    className="lg:max-w-125 lg:mx-auto rounded-[20px] py-4 px-6 flex w-full items-center justify-center"
                                 >
                                     <div className="flex flex-col gap-4 items-center">
                                         <LabelText>
@@ -272,7 +272,7 @@ function SharePage() {
                         {event?.fundRaiser?.organizations?.map((item) => {
                             return (
                                 <div className=" w-full flex items-center gap-2 shadow rounded-xl p-3 ">
-                                    <div className=" w-[64px] h-[64px] rounded-2xl ">
+                                    <div className=" w-16 h-16 rounded-2xl ">
                                         <img
                                             src={item?.logo}
                                             alt="logo"
@@ -307,7 +307,7 @@ function SharePage() {
                                 }
                                 className=" w-full flex items-center gap-3 px-2 bg-[#A73A7A66] bg-opacity-30 rounded-[20px] py-3 "
                             >
-                                <div className=" w-[44px] h-[44px] rounded-full ">
+                                <div className=" w-11 h-11 rounded-full ">
                                     <img
                                         className=" w-full h-full rounded-full object-cover "
                                         src={
@@ -319,7 +319,7 @@ function SharePage() {
                                     />
                                 </div>
                                 <div className=" flex flex-col ">
-                                    <div className=" font-bold text-[12px] flex justify-center items-center text-white bg-[#37137F] rounded h-[20px] w-[85px] ">
+                                    <div className=" font-bold text-[12px] flex justify-center items-center text-white bg-[#37137F] rounded h-5 w-21.25 ">
                                         Event Host:
                                     </div>
                                     <p className=" font-semibold text-[14px] text-center text-[#37137F] ">
